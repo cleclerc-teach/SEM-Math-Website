@@ -1488,6 +1488,22 @@ S['7i_inequality'] = { se: '2A.7I', name: 'Domain and range as inequalities', w:
   return { type: 'mc', lead: 'The graph of a function is shown.', fig, q: 'What are the domain and range of this function?', choices: mc({ t: T(sh.D, sh.R) }, [{ t: T(sh.R, sh.D), why: 'Domain is about x (left to right). Range is about y (up and down).' }, { t: T(flipB(sh.D), flipB(sh.R)), why: 'A closed dot uses ≤ or ≥. An open dot uses < or >.' }, { t: T(sh.D, flipB(sh.R)), why: 'Check the range: closed dot means ≤ or ≥.' }, { t: T(flipB(sh.D), sh.R), why: 'Check the domain: closed dot means ≤ or ≥.' }, { t: T(sh.D, sh.R, 'y', 'x'), why: 'The domain uses x and the range uses y.' }]),
     hint: 'Write x-values for the domain and y-values for the range. Closed dot: ≤ or ≥.', steps: [['Read the x-values from left to right on the graph.', null, 'Domain: ' + ineqOf(sh.D, 'x') + fig], ['Read the y-values from bottom to top.', null, 'Range: ' + ineqOf(sh.R, 'y')]] };
 } };
+S['7i_equation'] = { se: '2A.7I', name: 'Domain and range from an equation', w: 3, gen() {
+  const kind = pick(['abs', 'quad', 'quad', 'cube']), a = pick(kind === 'quad' ? [1, -1, 2, -2, Fr(1, 2), Fr(-1, 2)] : [1, -1, 2, -2, 3]), h = nz(-5, 5), k = nz(-6, 6), up = cval(a) > 0;
+  const fx = kind === 'abs' ? aform(a, h, k) : kind === 'quad' ? vform(a, h, k, 'f(x)') : cform(a, h, k);
+  const f = kind === 'abs' ? x => cval(a) * Math.abs(x - h) + k : kind === 'quad' ? x => cval(a) * (x - h) ** 2 + k : x => cval(a) * (x - h) ** 3 + k;
+  const D = [NINF, INF, 0, 0], R = kind === 'cube' ? [NINF, INF, 0, 0] : up ? [k, INF, 1, 0] : [NINF, k, 0, 1];
+  const ineq = G.LV >= 2 || G.rnd() < 0.4, T = (d, r) => ineq ? `Domain: ${ineqOf(d, 'x')}<br>Range: ${ineqOf(r, 'y')}` : `Domain: ${M(ivOf(d))}<br>Range: ${M(ivOf(r))}`;
+  const opp = up ? [NINF, k, 0, 1] : [k, INF, 1, 0], hs = up ? [h, INF, 1, 0] : [NINF, h, 0, 1];
+  const cands = kind === 'cube' ? [{ t: T(D, [k, INF, 1, 0]), why: 'A cubic keeps going up on one side and down on the other, so it reaches every y.' }, { t: T([h, INF, 1, 0], D), why: 'Any x can be cubed. The domain is all real numbers.' }, { t: T([h, INF, 1, 0], [k, INF, 1, 0]), why: '(h, k) is the center of a cubic, not an endpoint.' }, { t: T(D, [NINF, k, 0, 1]), why: 'A cubic reaches every y.' }]
+    : [{ t: T(D, opp), why: `a = ${cstr(a)} is ${up ? 'positive, so the graph opens up' : 'negative, so the graph opens down'}.` }, { t: T(hs, D), why: 'Domain and range are switched. Every x works; the range starts at the vertex height k.' }, { t: T(D, flipB(R)), why: `The vertex is on the graph, so ${M('y = ' + k)} is included.` }, { t: T(D, up ? [h, INF, 1, 0] : [NINF, h, 0, 1]), why: `The range starts at the vertex height k = ${k}, not at h = ${h}.` }, { t: T(D, up ? [-k, INF, 1, 0] : [NINF, -k, 0, 1]), why: `The vertex height is k = ${k}, read with its own sign.` }];
+  const graph = grid({ curves: [{ f }], pts: [{ x: h, y: k, label: P(h, k) }], aria: 'Graph of ' + fx });
+  const name = kind === 'abs' ? 'absolute value' : kind === 'quad' ? 'parabola' : 'cubic';
+  return { type: 'mc', q: `What are the domain and range of the function ${M(fx)}?`, choices: mc({ t: T(D, R) }, cands), hint: kind === 'cube' ? 'Picture y = x³. Does it ever stop going left, right, up, or down?' : 'Find the vertex (h, k), then decide if the graph opens up or down.',
+    steps: [[kind === 'cube' ? `This is a cubic with center ${BP(h, k)}.` : `This is ${kind === 'abs' ? 'an' : 'a'} ${name} with vertex ${BP(h, k)}. a = ${cstr(a)}, so it opens ${up ? 'up' : 'down'}.`, null, graph],
+      ['Domain: every x can go into the function, so the graph goes forever left and right.', null, 'Domain: ' + (ineq ? ineqOf(D, 'x') : M(ivOf(D)))],
+      [kind === 'cube' ? 'Range: the graph goes forever up and down.' : `Range: the ${up ? 'lowest' : 'highest'} point is the vertex, so y starts at ${k} and goes ${up ? 'up' : 'down'}.`, null, 'Range: ' + (ineq ? ineqOf(R, 'y') : M(ivOf(R)))]] };
+} };
 S['7i_convert'] = { se: '2A.7I', name: 'Interval notation and inequalities', w: 2, gen() {
   const lo = rint(-9, 3), hi = lo + rint(2, 10), kind = pick(['two', 'left', 'right']), c1 = G.rnd() < 0.5, c2 = G.rnd() < 0.5;
   const d = kind === 'two' ? [lo, hi, c1, c2] : kind === 'left' ? [NINF, hi, 0, c2] : [lo, INF, c1, 0];
@@ -1518,7 +1534,7 @@ const D = {
   '6e_one': 1, '6e_set': 1, '6e_setup': 3,
   '6f_solve': 1, '6f_numberline': 1,
   '7a_mult': 1, '7a_part': 1, '7a_radical': 3,
-  '7i_interval': 1, '7i_inequality': 1, '7i_convert': 2
+  '7i_interval': 1, '7i_inequality': 1, '7i_equation': 1, '7i_convert': 2
 };
 Object.keys(G.SKILLS).forEach(id => { G.SKILLS[id].d = D[id] || 1; });
 G.MW = {};
@@ -1536,7 +1552,7 @@ G.FACETS = {
   '2A.6E': [{ k: 'solve', name: 'Solve, including extraneous solutions', w: 3, s: ['6e_one', '6e_set'] }, { k: 'setup', name: 'Set up the two cases', w: 2, s: ['6e_setup', '6e_set'] }],
   '2A.6F': [{ k: 'solve', name: 'Solution as inequalities', w: 3, s: ['6f_solve'] }, { k: 'nl', name: 'Solution on a number line', w: 2, s: ['6f_numberline'] }],
   '2A.7A': [{ k: 'mult', name: 'Multiply', w: 3, s: ['7a_mult', '7a_radical'] }, { k: 'add', name: 'Add, subtract, and simplify i²', w: 2, s: ['7a_part'] }],
-  '2A.7I': [{ k: 'graph', name: 'Domain and range from a graph', w: 3, s: ['7i_interval', '7i_inequality'] }, { k: 'conv', name: 'Interval notation and inequalities', w: 2, s: ['7i_convert'] }]
+  '2A.7I': [{ k: 'graph', name: 'Domain and range from a graph', w: 3, s: ['7i_interval', '7i_inequality'] }, { k: 'eq', name: 'Domain and range from an equation', w: 3, s: ['7i_equation'] }, { k: 'conv', name: 'Interval notation and inequalities', w: 2, s: ['7i_convert'] }]
 };
 G.MODES = {
   1: { key: 'medium', name: 'Medium', tag: 'ACP level', blurb: 'Matches the SchoolCity example items: mostly multiple choice, a few typed answers, and 1 or 2 of the hardest item types.',
@@ -1697,6 +1713,7 @@ const TEKS = [
     moves: [
       { t: 'Interval notation', rule: 'A closed dot gets a bracket `[` or `]`. An open dot gets a parenthesis. An arrow goes to `∞` or `-∞`, which always gets a parenthesis.', ex: ['7i_interval', 3], watch: 'Domain and range switched is always a choice. Domain is x.' },
       { t: 'Inequalities', rule: 'A closed dot is `≤` or `≥`. An open dot is `<` or `>`. Write the domain with x and the range with y.', ex: ['7i_inequality', 2], watch: '`[2, 7)` means `2 ≤ x < 7`. Each end keeps its own symbol.' },
+      { t: 'From an equation', rule: 'No graph? Sketch one. Find the vertex `(h, k)` and which way it opens. Absolute value graphs and parabolas use every x, and y starts at k. A cubic uses every x and every y.', ex: ['7i_equation', 3], watch: 'The range starts at k, the y-value of the vertex, not at h.' },
       { t: 'Switch between them', rule: 'Read each end on its own: the number, and whether it is included.', ex: ['7i_convert', 4], watch: 'Infinity is never included, so it never gets a bracket.' }
     ], tip: 'Trace the graph from left to right with your finger for the domain, then bottom to top for the range.' }
 ];
