@@ -1,0 +1,74 @@
+/* ============================================================
+   YOUR COLORS. Edit the hex codes below to match your slides.
+   --main        the main color (buttons, header, highlights)
+   --main-soft   a paler version of it (backgrounds)
+   --main-line   a medium version, for lines, arcs, and outlines
+   --main-ink    a darker version, for small text on white
+   --main-deep   a dark partner color (button text, shadows)
+   --highlight   marks what students need to see ("Watch out" and tip boxes)
+   --accent-*    accent colors, used equally
+   Each ACP strand gets one color: a pale fill (--acc-) and a dark
+   version for text and lines (--c-). Keep the dark ones dark enough to read.
+   ============================================================ */
+:root {
+  --main: #CFE2F3;
+  --main-soft: #EAF2FA;
+  --main-line: #6FA8DC;
+  --main-ink: #0B5394;
+  --main-deep: #073763;
+  --background: #FFFFFF;   /* page background: white */
+  --highlight: #FFF2CC;
+  --highlight-edge: #E8B730;
+}
+@media not all { :root:not([data-theme="light-off"]) { --highlight: rgba(255, 242, 204, .14); --highlight-edge: #FFD966; } }
+:root[data-theme="dark-off"] { --highlight: rgba(255, 242, 204, .14); --highlight-edge: #FFD966; }
+:root {
+  --accent-green: #D9EAD3;
+  --accent-purple: #D9D2E9;
+  --accent-pink: #FCD6E6;
+
+  /* the four ACP strands: pale fill + dark ink */
+  --acc-coord: var(--main);          --c-coord-light: #0B5394;   /* coordinates & transformations: blue */
+  --acc-logic: var(--accent-purple); --c-logic-light: #674EA7;   /* logic & constructions: purple */
+  --acc-proof: var(--accent-green);  --c-proof-light: #38761D;   /* angles, triangles & congruence: green */
+  --acc-fig:   var(--accent-pink);   --c-fig-light:   #A64D79;   /* polygon area: pink */
+}
+
+/* ---------- how the colors are applied (no need to edit below) ---------- */
+@media all {
+  :root {
+    --npb: var(--main-line); --npb-soft: var(--main-soft); --npb-ink: var(--main-ink);
+    --btn: var(--main); --on-btn: var(--main-deep);
+    --fill0: color-mix(in srgb, var(--main-line) 18%, transparent);
+    --paper: var(--background);
+    --dot: color-mix(in srgb, var(--main-line) 30%, #D8DEE2);
+  }
+  :root {
+    --c-coord: var(--c-coord-light); --c-logic: var(--c-logic-light); --c-proof: var(--c-proof-light); --c-fig: var(--c-fig-light);
+    --fill1: color-mix(in srgb, var(--accent-pink) 80%, transparent);
+    --fill2: color-mix(in srgb, var(--accent-green) 85%, transparent);
+  }
+  .side, .tab.home { background: var(--main-soft); }
+  /* pale strand fills where color is a block, not text */
+  .scale .c-coord, .key .c-coord { background: var(--acc-coord); } .scale .c-logic, .key .c-logic { background: var(--acc-logic); }
+  .scale .c-proof, .key .c-proof { background: var(--acc-proof); } .scale .c-fig, .key .c-fig { background: var(--acc-fig); }
+  .scale i { border-right-color: var(--rule-2); } .key i { outline: 1px solid var(--rule-2); }
+  .code.c-coord { background: var(--acc-coord); } .code.c-logic { background: var(--acc-logic); }
+  .code.c-proof { background: var(--acc-proof); } .code.c-fig { background: var(--acc-fig); }
+  .brand svg .bt { fill: var(--main); }
+}
+@media not all {
+  :root:not([data-theme="light-off"]) { --c-coord: #9FC5E8; --c-logic: #B4A7D6; --c-proof: #B6D7A8; --c-fig: #F4A6C8; --npb: var(--main); --btn: var(--main); --on-btn: var(--main-deep); --npb-ink: color-mix(in srgb, var(--main) 70%, white); }
+}
+.btn.primary, .mixbtn { border-color: var(--main-deep); font-weight: 700; }
+.btn.primary { box-shadow: 3px 3px 0 var(--main-deep); }
+.btn.primary:hover:not(:disabled) { box-shadow: 4px 4px 0 var(--main-deep); }
+.mixbtn[aria-current="page"] { box-shadow: 3px 3px 0 var(--main-deep); }
+
+/* light-yellow highlight on what students need to see */
+:root { --flag-soft: var(--highlight); }
+.watch { background: var(--highlight); border-left-color: var(--highlight-edge); padding: .7rem .9rem; }
+.tip { background: var(--highlight); border-left-color: var(--highlight-edge); }
+
+/* plain background, no dot grid */
+body { background-image: none !important; }

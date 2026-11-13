@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Math Review</title>
+<meta name="description" content="Practice sites for ACP review: lessons and endless practice questions by TEKS, plus a mixed review weighted like the test.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Home: a drafting sheet with one card per course. Same tokens as the course pages. */
+:root {
+  --main: #CFE2F3; --main-soft: #EAF2FA; --main-line: #6FA8DC; --main-ink: #0B5394; --main-deep: #073763;
+  --paper: #F3F8FA; --sheet: #FFFFFF; --ink: #1C2126; --ink-2: #47515A; --muted: #6A737B; --rule: #D6DAD3; --dot: #CFE3EC;
+  --f-display: 'IBM Plex Sans Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+  --f-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media not all { :root:not([data-theme="light-off"]) {
+  --paper: #0F2C48; --sheet: #13385B; --ink: #EAF2FA; --ink-2: #C0D4E7; --muted: #8FAAC3; --rule: #2A5276; --dot: #22476B;
+  --main-soft: rgba(207, 226, 243, .12); --main-ink: #A9DDF7; color-scheme: dark; } }
+:root[data-theme="dark-off"] {
+  --paper: #0F2C48; --sheet: #13385B; --ink: #EAF2FA; --ink-2: #C0D4E7; --muted: #8FAAC3; --rule: #2A5276; --dot: #22476B;
+  --main-soft: rgba(207, 226, 243, .12); --main-ink: #A9DDF7; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background-color: var(--paper); background-image: radial-gradient(var(--dot) 1px, transparent 1.2px); background-size: 22px 22px; color: var(--ink); font-family: var(--f-body); font-size: 1.0625rem; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 3rem; }
+:focus-visible { outline: 3px solid var(--main-line); outline-offset: 2px; }
+.wrap { max-width: 60rem; margin: 0 auto; }
+.top { margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 2.5rem; padding: 2.75rem max(16px, env(safe-area-inset-left, 0px)) 2.5rem; background: var(--main-soft); border-bottom: 1.5px solid var(--ink); }
+.top .wrap { display: flex; align-items: center; gap: 1.25rem; }
+.mark { width: 3.6rem; height: 3.6rem; flex: none; }
+.mark .bt { fill: var(--main); stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+.mark .ba { fill: none; stroke: var(--main-deep); stroke-width: 1.6; stroke-dasharray: 2.5 3; }
+@media not all { :root:not([data-theme="light-off"]) .mark .ba { stroke: var(--main); } }
+.eyebrow { font-family: var(--f-mono); font-weight: 500; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 .2rem; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(2rem, 6vw, 3.1rem); line-height: 1.05; margin: 0; text-wrap: balance; }
+.tagline { margin: .5rem 0 0; color: var(--ink-2); max-width: 40rem; }
+h2 { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; margin: 0 0 1rem; display: flex; align-items: center; gap: .6rem; }
+h2::before { content: ""; width: 1.6rem; height: 9px; border-left: 1.5px solid var(--main-line); border-right: 1.5px solid var(--main-line); background: linear-gradient(var(--main-line), var(--main-line)) center / 100% 1.5px no-repeat; }
+.courses { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; }
+.course { display: flex; flex-direction: column; gap: .5rem; background: var(--sheet); border: 1.5px solid var(--ink); padding: 1.4rem 1.4rem 1.3rem; color: inherit; text-decoration: none; min-width: 0; }
+a.course { box-shadow: 4px 4px 0 var(--main-line); transition: transform .12s, box-shadow .12s; }
+a.course:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--main-line); }
+.course h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.6rem; margin: 0; line-height: 1.1; }
+.course .test { font-family: var(--f-mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--main-ink); margin: 0; }
+.course p { margin: 0; color: var(--ink-2); }
+.course .go { margin-top: auto; padding-top: .6rem; font-weight: 700; color: var(--ink); }
+.course.soon { border-style: dashed; border-color: var(--muted); }
+.course.soon h3 { color: var(--muted); }
+.course.soon .go { color: var(--muted); font-weight: 600; }
+.how { margin-top: 2.75rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 2rem; }
+.how div { border-top: 1.5px solid var(--ink); padding-top: .6rem; }
+.how div { border-top: 6px solid var(--a, var(--main)); padding-top: .7rem; }
+.how div:nth-child(1) { --a: var(--accent-green, #D9EAD3); } .how div:nth-child(2) { --a: var(--accent-purple, #D9D2E9); } .how div:nth-child(3) { --a: var(--accent-pink, #FCD6E6); }
+.how b { display: block; font-family: var(--f-display); font-size: 1.1rem; }
+.how span { color: var(--ink-2); font-size: .95rem; }
+footer { margin-top: 3rem; font-size: .85rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { a.course { transition: none; } }
+</style>
+<link rel="stylesheet" href="theme.css">
+<script src="settings.js"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><path class="ba" d="M5 34 A 29 29 0 0 1 34 8"/><polygon class="bt" points="5,34 35,34 20,8"/></svg>
+  <div><p class="eyebrow">ACP review</p><h1 id="site-name">Math Review</h1><p class="tagline" id="tagline"></p></div>
+</div></header>
+<main class="wrap">
+  <h2>Choose your course</h2>
+  <div class="courses" id="courses"></div>
+  <section class="how" aria-label="How it works">
+    <div><b>Learn</b><span>Each TEKS has a short lesson with worked examples.</span></div>
+    <div><b>Practice</b><span>New questions every time, with the steps shown after you answer.</span></div>
+    <div><b>Mixed review</b><span>A full-length review weighted like the ACP, with a list of what to study next.</span></div>
+  </section>
+  <footer>Adapted with permission from Troy's Geometry ACP Prep site.</footer>
+</main>
+<script>
+(function () {
+  var C = window.SITE_SETTINGS || {};
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  if (C.siteName) { document.getElementById('site-name').textContent = C.siteName; document.title = C.siteName; }
+  document.getElementById('tagline').textContent = C.tagline || '';
+  var list = C.courses || [{ name: 'Geometry', folder: 'geometry/index.html', test: 'Semester 1 ACP', blurb: 'Lessons and practice for all 13 TEKS.', ready: true }];
+  document.getElementById('courses').innerHTML = list.map(function (c) {
+    var inner = '<p class="test">' + esc(c.test) + '</p><h3>' + esc(c.name) + '</h3><p>' + esc(c.blurb) + '</p>' +
+      '<span class="go">' + (c.ready ? 'Start practicing →' : 'Coming soon') + '</span>';
+    return c.ready ? '<a class="course" href="' + esc(c.folder) + '">' + inner + '</a>' : '<div class="course soon" aria-disabled="true">' + inner + '</div>';
+  }).join('');
+})();
+</script>
+</body>
+</html>
