@@ -22,7 +22,7 @@ function doPost(e) {
   lock.waitLock(20000);
   try {
     const ev = JSON.parse(e.postData.contents);
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = book_();
     if (ev.event === 'finish') {
       const sh = sheet_(ss, 'Finished', ['Received', 'Name', 'Period', 'Difficulty', 'Started', 'Finished', 'Time taken', 'Score', 'Out of', 'Percent', 'Missed'].concat(TEKS_ORDER));
       const per = ev.per || {};
@@ -38,8 +38,27 @@ function doPost(e) {
   }
 }
 
-function doGet() {
-  return ContentService.createTextOutput('The ACP Prep log is running.');
+// Open the web app URL to check it. Add ?test=1 to the end of the URL to write one test row.
+function doGet(e) {
+  const ss = book_();
+  if (e && e.parameter && e.parameter.test) {
+    const sh = sheet_(ss, 'Started', ['Received', 'Name', 'Period', 'Difficulty', 'Started']);
+    sh.appendRow([new Date(), 'TEST ROW (delete me)', '', '', '']);
+  }
+  return ContentService.createTextOutput('The ACP Prep log is running. Results go to: ' + ss.getName() + '  ' + ss.getUrl());
+}
+
+// Works whether the script was made from inside a sheet (Extensions > Apps Script)
+// or on its own at script.google.com. On its own, it makes a sheet called "ACP Prep Log" in your Drive.
+function book_() {
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active;
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty('SHEET_ID');
+  if (id) return SpreadsheetApp.openById(id);
+  const ss = SpreadsheetApp.create('ACP Prep Log');
+  props.setProperty('SHEET_ID', ss.getId());
+  return ss;
 }
 
 function sheet_(ss, name, header) {
