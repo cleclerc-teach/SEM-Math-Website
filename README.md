@@ -1,7 +1,8 @@
 # ACP Prep: Geometry and Algebra 2 (Semester 1)
 
-Free practice sites for the Semester 1 ACPs. **Geometry Advanced**: lessons and endless practice for all 13 TEKS
-(G.2B, 2C, 3B, 4B, 4C, 5A, 5B, 5C, 5D, 6A, 6C, 6D, 11A) plus a 28- or 15-question mixed review weighted like
+Free practice sites for the Semester 1 ACPs. **Geometry Advanced**: lessons and endless practice for the 13 blueprint TEKS
+(G.2B, 2C, 3B, 4B, 4C, 5A, 5B, 5C, 5D, 6A, 6C, 6D, 11A) and two extra ones (G.2A, G.6B), targeted practice that adjusts
+its level, a "My progress" page, and a 32-, 28-, or 15-question mixed review (answers after each question or at the end) weighted like
 the Dallas ISD blueprint. Every question is generated fresh, so students never run out.
 
 **Algebra II Advanced** (`algebra2/`): lessons and practice for all 14 TEKS (2A.2A, 3A, 3B, 3F, 4B, 4D, 4F, 4H,

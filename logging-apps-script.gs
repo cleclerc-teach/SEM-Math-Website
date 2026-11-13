@@ -18,7 +18,7 @@
  * If you edit this script later, use Deploy > Manage deployments > Edit > New version,
  * so the URL stays the same.
  */
-const TEKS_ORDER = ['G.2B', 'G.2C', 'G.3B', 'G.4B', 'G.4C', 'G.5A', 'G.5B', 'G.5C', 'G.5D', 'G.6A', 'G.6C', 'G.6D', 'G.11A'];
+const TEKS_ORDER = ['G.2B', 'G.2C', 'G.3B', 'G.4B', 'G.4C', 'G.5A', 'G.5B', 'G.5C', 'G.5D', 'G.6A', 'G.6C', 'G.6D', 'G.11A', 'G.2A', 'G.6B'];
 const A2_TEKS_ORDER = ['2A.2A', '2A.3A', '2A.3B', '2A.3F', '2A.4B', '2A.4D', '2A.4F', '2A.4H', '2A.6C', '2A.6D', '2A.6E', '2A.6F', '2A.7A', '2A.7I'];
 
 // Each course writes to its own pair of tabs.
@@ -83,6 +83,10 @@ function sheet_(ss, name, header) {
   if (!sh && name.indexOf('Geometry ') === 0) {
     sh = ss.getSheetByName(name.slice('Geometry '.length));
     if (sh) sh.setName(name);
+  }
+  // A newer site version can add columns (G.2A and G.6B came later). Add any missing header cells at the end.
+  if (sh && sh.getLastRow() > 0 && sh.getLastColumn() < header.length) {
+    sh.getRange(1, sh.getLastColumn() + 1, 1, header.length - sh.getLastColumn()).setValues([header.slice(sh.getLastColumn())]).setFontWeight('bold');
   }
   if (!sh) {
     sh = ss.insertSheet(name);
