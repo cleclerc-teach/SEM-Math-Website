@@ -507,6 +507,9 @@ p { margin: 0 0 .75rem; }
 .gfig .opendot { fill: var(--sheet); stroke: var(--c-fig); stroke-width: 2.4; }
 .allcourses { font-size: .85rem; font-weight: 600; color: var(--npb-ink); text-decoration: none; white-space: nowrap; }
 .allcourses:hover { text-decoration: underline; }
+.mixbtn.homelink { background: var(--sheet); color: var(--ink); text-decoration: none; }
+.mixbtn.homelink::before { display: none; }
+.mixbtn.homelink:hover { background: var(--npb-soft); }
 /* Algebra 2 additions: curves, shaded regions, number lines, matrices */
 .brand .bp { fill: var(--main); fill-opacity: .55; stroke: var(--ink); stroke-width: 2.2; }
 .brand .bv { fill: var(--ink); }
@@ -542,7 +545,7 @@ svg.nline { width: 100%; max-width: 340px; height: auto; display: block; }
     <div class="side-top">
       <button class="brand" data-act="go" data-go="home" aria-label="Algebra 2 ACP Prep home"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="ba" d="M4 34 H36 M20 37 V4"/><path class="bp" d="M7 6 Q20 58 33 6"/><circle class="bv" cx="20" cy="32" r="2.6"/></svg><span class="brand-t"><small>Algebra 2</small>ACP Prep</span></button>
       <button class="mixbtn" data-act="go" data-go="mix" data-nav="mix">Mixed review</button>
-      <a class="allcourses" href="../index.html">← All courses</a>
+      <a class="mixbtn homelink" href="../index.html"><svg class="hico" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.2 10 3l7 6.2M5 7.6V17h3.6v-4.6h2.8V17H15V7.6"/></svg>Home</a>
     </div>
     <nav class="tabs" aria-label="Topics" id="tabs"></nav>
   </header>
@@ -2307,7 +2310,7 @@ function drawer() {
 /* ---------- render ---------- */
 function renderTabs() {
   const nav = document.getElementById('tabs'); if (!nav) return;
-  let h = `<button class="tab home" data-act="go" data-go="home" data-nav="home"><svg class="hico" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.2 10 3l7 6.2M5 7.6V17h3.6v-4.6h2.8V17H15V7.6"/></svg><span class="tt">Home</span></button>`;
+  let h = ``;
   for (const k of ORDER) {
     h += `<p class="grp c-${k}">${STRANDS[k].short}</p>`;
     h += TEKS.filter(t => t.strand === k).map(t => { const all = doneCount(t.skills) === t.skills.length; return `<button class="tab c-${t.strand}" data-act="go" data-go="${t.code}" data-nav="${t.code}" title="${esc(t.title)}"><span class="n">${t.code}</span><span class="tt">${t.short}</span>${all ? '<span class="tck" aria-label="all skills checked off">✓</span>' : ''}</button>`; }).join('');

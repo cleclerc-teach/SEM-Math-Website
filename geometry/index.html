@@ -535,6 +535,9 @@ p { margin: 0 0 .75rem; }
 .gfig .opendot { fill: var(--sheet); stroke: var(--c-fig); stroke-width: 2.4; }
 .allcourses { font-size: .85rem; font-weight: 600; color: var(--npb-ink); text-decoration: none; white-space: nowrap; }
 .allcourses:hover { text-decoration: underline; }
+.mixbtn.homelink { background: var(--sheet); color: var(--ink); text-decoration: none; }
+.mixbtn.homelink::before { display: none; }
+.mixbtn.homelink:hover { background: var(--npb-soft); }
 @media (min-width: 1000px) { .tab.xt { display: none; } }
 @media (max-width: 999px) { .mixbtn.alt { display: none; } }
 @media (max-width: 560px) { .mode span { white-space: normal; height: 100%; display: flex; align-items: center; justify-content: center; } }
@@ -550,7 +553,7 @@ p { margin: 0 0 .75rem; }
       <button class="mixbtn" data-act="go" data-go="mix" data-nav="mix">Mixed review</button>
       <button class="mixbtn alt tpbtn" data-act="go" data-go="tp" data-nav="tp"><svg class="tri" viewBox="0 0 14 12.5" aria-hidden="true"><polygon points="7,1 13,11.4 1,11.4"/></svg>Targeted practice</button>
       <button class="mixbtn alt" data-act="go" data-go="prog" data-nav="prog">My progress</button>
-      <a class="allcourses" href="../index.html">← All courses</a>
+      <a class="mixbtn homelink" href="../index.html"><svg class="hico" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.2 10 3l7 6.2M5 7.6V17h3.6v-4.6h2.8V17H15V7.6"/></svg>Home</a>
     </div>
     <nav class="tabs" aria-label="Topics" id="tabs"></nav>
   </header>
@@ -4215,7 +4218,7 @@ function drawer() {
 /* ---------- render ---------- */
 function renderTabs() {
   const nav = document.getElementById('tabs'); if (!nav) return;
-  let h = `<button class="tab home" data-act="go" data-go="home" data-nav="home"><svg class="hico" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.2 10 3l7 6.2M5 7.6V17h3.6v-4.6h2.8V17H15V7.6"/></svg><span class="tt">Home</span></button><button class="tab xt" data-act="go" data-go="tp" data-nav="tp"><span class="tt">Targeted practice</span></button><button class="tab xt" data-act="go" data-go="prog" data-nav="prog"><span class="tt">My progress</span></button>`;
+  let h = `<button class="tab xt" data-act="go" data-go="tp" data-nav="tp"><span class="tt">Targeted practice</span></button><button class="tab xt" data-act="go" data-go="prog" data-nav="prog"><span class="tt">My progress</span></button>`;
   for (const k of ['coord', 'logic', 'proof', 'fig']) {
     h += `<p class="grp c-${k}">${STRANDS[k].short}</p>`;
     h += TEKS.filter(t => t.strand === k).map(t => { const all = doneCount(t.skills) === t.skills.length; return `<button class="tab c-${t.strand}" data-act="go" data-go="${t.code}" data-nav="${t.code}" title="${esc(t.title)}"><span class="n">${t.code}</span><span class="tt">${t.short}</span>${all ? '<span class="tck" aria-label="all skills checked off">✓</span>' : ''}</button>`; }).join('');
