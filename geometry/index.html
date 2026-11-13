@@ -3854,12 +3854,12 @@ document.addEventListener('submit', e => { if (e.target.id === 'signin') { e.pre
 function doSignIn() {
   const cap = v => v ? v[0].toUpperCase() + v.slice(1).toLowerCase() : v;
   const f3 = document.getElementById('st-first').value.replace(/\s+/g, ''), l3 = document.getElementById('st-last').value.replace(/\s+/g, '');
-  const three = v => /^\p{L}{3}$/u.test(v);
+  const three = v => [...v].length === 3 && /^\p{L}+_*$/u.test(v); // short names pad with _ (Al_)
   const name = cap(f3) + ' ' + cap(l3), period = document.getElementById('st-per').value;
   const mode = +((document.querySelector('input[name="mode"]:checked') || {}).value || 1), len = +((document.querySelector('input[name="len"]:checked') || {}).value || 28);
   saved.who = { name, period, mode, len };
-  if (!three(f3)) { S.signErr = 'Type exactly 3 letters from the start of your first name (example: Maria → Mar).'; render(); document.getElementById('st-first').focus(); return; }
-  if (!three(l3)) { S.signErr = 'Type exactly 3 letters from the start of your last name (example: Garcia → Gar).'; render(); document.getElementById('st-last').focus(); return; }
+  if (!three(f3)) { S.signErr = 'Type exactly 3 letters from the start of your first name (example: Maria → Mar). For a short name, fill with _ (Al → Al_).'; render(); document.getElementById('st-first').focus(); return; }
+  if (!three(l3)) { S.signErr = 'Type exactly 3 letters from the start of your last name (example: Garcia → Gar). For a short name, fill with _ (Li → Li_).'; render(); document.getElementById('st-last').focus(); return; }
   if (!period) { S.signErr = 'Choose your class period.'; render(); document.getElementById('st-per').focus(); return; }
   S.signErr = ''; startTest(name, period, mode, len); render(true);
 }
