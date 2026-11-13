@@ -3055,7 +3055,7 @@ S['11a_context'] = { se: 'G.11A', name: 'Regular polygon area in context (entry)
    1 = medium: the level and shape of the SchoolCity example items (Geometry Advanced Sem 1 26-27).
    2 = hard: multi-step variants, select-all, drop-downs, and more typed answers.
    3 = extra hard: the hardest item types and variants that go past the example set. */
-/* G.2A (midpoints and fractional distance) and G.6B (proving triangles congruent).
+/* G.2A (midpoint of a segment) and G.6B (proving triangles congruent).
    These two SEs are extra: they appear on the 32-question review and in practice, not on the 28-question blueprint set. */
 (function (G) {
 'use strict';
@@ -3095,64 +3095,6 @@ S['2a_midpoint'] = { se: 'G.2A', name: 'Find the midpoint', w: 2, gen() {
       ['Check: the midpoint should sit halfway along the segment.', null, segGrid(A, B, [{ x: M[0], y: M[1], label: 'M', cls: 'hl', lcls: 'hl' }], 'The midpoint M halfway between A and B')]] };
 } };
 
-/* a fraction k/n with the change from A to B divisible by n, so every answer lands on whole numbers */
-function fracSeg(ns0) {
-  for (let t = 0; t < 400; t++) {
-    const n = pick(ns0), k = rint(1, n - 1); if (gcd(k, n) !== 1 || 2 * k === n) continue;
-    const a = nz(-3, 3), b = nz(-3, 3), A = [rint(-8, 8), rint(-8, 8)], B = [A[0] + n * a, A[1] + n * b];
-    if (!inb(B, 9) || Math.abs(n * a) < 3 || Math.abs(n * b) < 3) continue;
-    return { n, k, a, b, A, B, Pt: [A[0] + k * a, A[1] + k * b] };
-  }
-  return null;
-}
-function fracSteps(A, B, k, n, Pt, word, AB) {
-  const dx = B[0] - A[0], dy = B[1] - A[1];
-  return [['Find the change in x from A to B.', `${B[0]} - ${par(A[0])} = ${dx}`], ['Find the change in y from A to B.', `${B[1]} - ${par(A[1])} = ${dy}`],
-    [`${word || 'Take'} {${k}/${n}} of each change.`.replace(/\{(\d+)\/(\d+)\}/, '`{$1/$2}`'), `{${k}/${n}}(${dx}) = ${k * dx / n}, {${k}/${n}}(${dy}) = ${k * dy / n}`],
-    ['Add those amounts to A, the point you start from.', `(${A[0]} + ${par(k * dx / n)}, ${A[1]} + ${par(k * dy / n)}) = ${PT(Pt)}`, segGrid((AB || [A, B])[0], (AB || [A, B])[1], [{ x: Pt[0], y: Pt[1], label: 'P', cls: 'hl', lcls: 'hl' }], 'Point P on segment AB')]];
-}
-S['2a_fraction'] = { se: 'G.2A', name: 'A point a fraction of the way along a segment', w: 3, gen() {
-  const F = fracSeg(G.LV >= 2 ? [3, 4, 5, 6] : [3, 4, 5]); const { n, k, A, B, Pt } = F;
-  const fromB = G.rnd() < (G.LV >= 2 ? 0.4 : 0.2);
-  const start = fromB ? B : A, end = fromB ? A : B, sName = fromB ? 'B' : 'A', eName = fromB ? 'A' : 'B';
-  const key = fromB ? [B[0] + k * (A[0] - B[0]) / n, B[1] + k * (A[1] - B[1]) / n] : Pt;
-  const lead = `Segment \`‾AB\` has endpoints ${'`A' + P(...A) + '`'} and ${'`B' + P(...B) + '`'}. Point P is on \`‾AB\`, \`{${k}/${n}}\` of the way from ${sName} to ${eName}.`;
-  const other = [start[0] + (n - k) * (end[0] - start[0]) / n, start[1] + (n - k) * (end[1] - start[1]) / n];
-  const steps = fracSteps(start, end, k, n, key, null, [A, B]).map(s => s.slice());
-  if (fromB) { steps[0][0] = 'Start at B, because the question says “from B to A.” Find the change in x from B to A.'; steps[1][0] = 'Find the change in y from B to A.'; steps[3][0] = 'Add those amounts to B, the point you start from.'; }
-  if (G.rnd() < 0.3) {
-    return { type: 'plot', lead, q: 'Plot point P on the coordinate grid.', plot: { given: { segs: [{ a: A, b: B }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: B[0], y: B[1], label: 'B' }] }, n: 1, ans: [key], names: ['P'] },
-      hint: `Count the change in x and in y from ${sName} to ${eName}. Take \`{${k}/${n}}\` of each, starting at ${sName}.`, steps, answerText: '`P' + PT(key) + '`' };
-  }
-  const cands = [
-    { m: PT(other), why: `That point is \`{${k}/${n}}\` of the way from ${eName}, not from ${sName}.` },
-    { m: PT([k * (end[0] - start[0]) / n, k * (end[1] - start[1]) / n]), why: `That is only the change. Add it to the coordinates of ${sName}.` },
-    { m: PT(mid(A, B)), why: 'That is the midpoint, which is `{1/2}` of the way.' },
-    { m: PT([k * end[0] / n, k * end[1] / n]), why: `Take the fraction of the CHANGE from ${sName} to ${eName}, not of the coordinates of ${eName}.` },
-    { m: PT([key[1], key[0]]), why: 'The x- and y-coordinates are switched.' }];
-  return { type: 'mc', lead, q: 'What are the coordinates of point P?', choices: mc({ m: PT(key) }, cands),
-    hint: `Find how far x and y change from ${sName} to ${eName}. Take \`{${k}/${n}}\` of each change and add it to ${sName}.`, steps };
-} };
-
-S['2a_ratio'] = { se: 'G.2A', name: 'Partition a segment in a ratio', w: 2, gen() {
-  let F, p, q;
-  for (let t = 0; t < 200; t++) { F = fracSeg([3, 4, 5, 6, 7]); if (!F) continue; p = F.k; q = F.n - F.k; if (p !== q && gcd(p, q) === 1) break; }
-  const { n, A, B, Pt } = F;
-  const lead = `Segment \`‾AB\` has endpoints ${'`A' + P(...A) + '`'} and ${'`B' + P(...B) + '`'}. Point P partitions \`‾AB\` so that the ratio of AP to PB is \`${p} : ${q}\`.`;
-  const rev = [A[0] + q * (B[0] - A[0]) / n, A[1] + q * (B[1] - A[1]) / n];
-  const asFrac = [A[0] + p * (B[0] - A[0]) / q, A[1] + p * (B[1] - A[1]) / q];
-  const cands = [
-    { m: PT(rev), why: `That is \`${q} : ${p}\`. AP is the part next to A, so P is closer to ${p < q ? 'A' : 'B'}.` },
-    p < q && Number.isInteger(asFrac[0]) && Number.isInteger(asFrac[1]) ? { m: PT(asFrac), why: `The ratio \`${p} : ${q}\` is not the fraction \`{${p}/${q}}\`. There are ${p} + ${q} = ${n} parts in all.` } : null,
-    { m: PT([p * (B[0] - A[0]) / n, p * (B[1] - A[1]) / n]), why: 'That is only the change. Add it to the coordinates of A.' },
-    { m: PT(mid(A, B)), why: 'That is the midpoint. It splits the segment in the ratio 1 : 1.' },
-    { m: PT([Pt[1], Pt[0]]), why: 'The x- and y-coordinates are switched.' },
-    { m: PT([A[0] - p * (B[0] - A[0]) / n, A[1] - p * (B[1] - A[1]) / n]), why: 'Move from A toward B, not away from it.' }];
-  const steps = [[`A ratio of \`${p} : ${q}\` cuts the segment into ${p} + ${q} = ${n} equal parts. P is ${p} part${p === 1 ? '' : 's'} from A, so P is \`{${p}/${n}}\` of the way from A to B.`, null]].concat(fracSteps(A, B, p, n, Pt));
-  return { type: 'mc', lead, q: 'What are the coordinates of point P?', choices: mc({ m: PT(Pt) }, cands, i => i < 8 ? { m: PT([Pt[0] + [1, -1, 0, 0, 1, -1, 2, -2][i], Pt[1] + [0, 0, 1, -1, 1, -1, 2, -2][i]]), why: 'Recheck the change from A to B and the fraction.' } : null),
-    hint: `Add the parts of the ratio to get the total number of parts. P is \`{${p}/${n}}\` of the way from A.`, steps };
-} };
-
 /* a number line from lo to hi with points */
 function numLine(lo, hi, pts) {
   const u = Math.min(30, 420 / (hi - lo)), F = new Fig(), y = 30, X = v => (v - lo) * u;
@@ -3162,24 +3104,33 @@ function numLine(lo, hi, pts) {
   pts.forEach(q => { F.raw(`<circle class="${q.cls || 'pd'}" cx="${X(q.v)}" cy="${y}" r="5"/>`, [[X(q.v), y]]); F.text([X(q.v), y - 12], q.name, { cls: 'lb b', size: 15 }); });
   return F.svg('Number line with ' + pts.map(q => `point ${q.name} at ${q.v}`).join(' and '), { scale: 1.2 });
 }
-S['2a_numline'] = { se: 'G.2A', name: 'A fraction of the way on a number line', w: 2, gen() {
-  let a, b, k, n;
-  for (let t = 0; t < 300; t++) {
-    n = pick(G.LV >= 2 ? [3, 4, 5, 6, 8] : [3, 4, 5]); k = rint(1, n - 1); if (gcd(k, n) !== 1) continue;
-    const step = pick([1, 2, 3]); a = rint(-12, 6); b = a + n * step * (G.rnd() < 0.3 ? -1 : 1);
-    if (Math.abs(b) <= 14 && Math.abs(b - a) >= 6 && Math.abs(b - a) <= 24) break;
-  }
-  const lo = Math.min(a, b) - 1, hi = Math.max(a, b) + 1, d = b - a, x = a + k * d / n;
+S['2a_mid_numline'] = { se: 'G.2A', name: 'Midpoint on a number line', w: 2, gen() {
+  let a, b;
+  for (let t = 0; t < 300; t++) { a = rint(-14, 8); b = a + 2 * rint(3, 11) * (G.rnd() < 0.3 ? -1 : 1); if (Math.abs(b) <= 16 && a !== 0 && b !== 0 && a !== -b) break; }
+  const lo = Math.min(a, b) - 1, hi = Math.max(a, b) + 1, d = b - a, x = (a + b) / 2;
   const fig = numLine(lo, hi, [{ v: a, name: 'A' }, { v: b, name: 'B' }]);
-  const cands = [{ v: b - k * d / n, why: `That point is \`{${k}/${n}}\` of the way from B, not from A.` }, { v: k * d / n, why: 'That is only the distance to move. Start at A and move that far toward B.' },
-    { v: a + k * d / n * -1, why: 'Move toward B, not away from it.' }, { v: (a + b) / 2, why: 'That is the midpoint, which is `{1/2}` of the way.' }, { v: k * b / n, why: 'Take the fraction of the DISTANCE from A to B, not of the coordinate of B.' }];
+  const cands = [{ v: d / 2, why: 'That is half the distance from A to B. Start at A and move that far toward B, or average the two coordinates.' }, { v: -d / 2, why: 'That is half the distance, with the wrong sign. Average the two coordinates.' },
+    { v: a + b, why: 'You added the coordinates but did not divide by 2.' }, { v: -x, why: 'Watch the signs when you add a negative number.' }, { v: (b - a) / 2 + b, why: 'Move from A toward B. The midpoint is between A and B.' }];
   const offs = [1, -1, 2, -2, 3, -3, 4, -4];
-  const choices = G.sortedChoices(mc({ t: ns(x), v: x }, cands.filter(c => Number.isInteger(c.v)).map(c => ({ t: ns(c.v), v: c.v, why: c.why })), i => i < offs.length ? { t: ns(x + offs[i]), v: x + offs[i], why: 'Recheck the distance and the fraction.' } : null));
-  return { type: 'mc', lead: `Points A and B are on the number line.`, fig, q: `Point P is \`{${k}/${n}}\` of the way from A to B. What is the coordinate of P?`, choices,
-    hint: `Find the distance from A to B. Take \`{${k}/${n}}\` of it, then move that far from A toward B.`,
-    steps: [['Find the distance from A to B.', `${b} - ${par(a)} = ${d}`], [`Take \`{${k}/${n}}\` of it.`, `{${k}/${n}}(${d}) = ${k * d / n}`], ['Start at A and move that far.', `${a} + ${par(k * d / n)} = ${ns(x)}`, numLine(lo, hi, [{ v: a, name: 'A' }, { v: b, name: 'B' }, { v: x, name: 'P', cls: 'pd hlp' }])]] };
+  const choices = G.sortedChoices(mc({ t: ns(x), v: x }, cands.map(c => ({ t: ns(c.v), v: c.v, why: c.why })), i => i < offs.length ? { t: ns(x + offs[i]), v: x + offs[i], why: 'Recheck your work: add the coordinates, then divide by 2.' } : null));
+  return { type: 'mc', lead: 'Points A and B are on the number line.', fig, q: 'Point M is the midpoint of `‾AB`. What is the coordinate of M?', choices,
+    hint: 'Add the two coordinates and divide by 2. The answer should sit halfway between A and B.',
+    steps: [['Average the two coordinates.', `{${a} + ${par(b)}/2} = {${a + b}/2} = ${ns(x)}`], ['Check: M is the same distance from A and from B.', `${ns(x)} - ${par(a)} = ${ns(x - a)}, ${b} - ${par(x)} = ${ns(b - x)}`, numLine(lo, hi, [{ v: a, name: 'A' }, { v: b, name: 'B' }, { v: x, name: 'M', cls: 'pd hlp' }])]] };
 } };
-
+S['2a_mid_graph'] = { se: 'G.2A', name: 'Midpoint of a graphed segment', w: 2, gen() {
+  let A, B;
+  for (let t = 0; t < 300; t++) { A = [rint(-9, 9), rint(-9, 9)]; B = [A[0] + 2 * nz(-6, 6), A[1] + 2 * nz(-6, 6)]; if (inb(B, 9) && Math.abs(B[0] - A[0]) >= 4 && Math.abs(B[1] - A[1]) >= 4) break; }
+  const M = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+  const given = { segs: [{ a: A, b: B }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: B[0], y: B[1], label: 'B' }] };
+  const steps = [['Read the endpoints from the graph.', `A${P(...A)}, B${P(...B)}`], ['Average the x-coordinates and average the y-coordinates.', `M = ({${A[0]} + ${par(B[0])}/2}, {${A[1]} + ${par(B[1])}/2}) = ${PT(M)}`],
+    ['Check: M is halfway along the segment.', null, segGrid(A, B, [{ x: M[0], y: M[1], label: 'M', cls: 'hl', lcls: 'hl' }], 'The midpoint M halfway between A and B')]];
+  if (G.rnd() < 0.5) return { type: 'plot', lead: 'Segment `‾AB` is graphed on the coordinate grid.', q: 'Plot the midpoint M of `‾AB`.', plot: { given, n: 1, ans: [M], names: ['M'] },
+    hint: 'Count halfway across and halfway up or down from A to B.', steps, answerText: '`M' + PT(M) + '`' };
+  const cands = [{ m: PT([(B[0] - A[0]) / 2, (B[1] - A[1]) / 2]), why: 'That is half of the change from A to B. Add the coordinates, then divide by 2.' }, { m: PT([A[0] + B[0], A[1] + B[1]]), why: 'You added the coordinates but did not divide by 2.' },
+    { m: PT([M[1], M[0]]), why: 'The x- and y-coordinates are switched.' }, { m: PT([-M[0], M[1]]), why: 'Watch the signs when you add a negative number.' }, { m: PT([M[0], -M[1]]), why: 'Watch the signs when you add a negative number.' }];
+  return { type: 'mc', lead: 'Segment `‾AB` is graphed on the coordinate grid.', fig: grid(Object.assign({ maxw: 320, aria: 'Segment AB on a coordinate grid' }, JSON.parse(JSON.stringify(given)))), q: 'What are the coordinates of the midpoint of `‾AB`?', choices: mc({ m: PT(M) }, cands, i => i < 8 ? { m: PT([M[0] + [1, -1, 0, 0, 1, -1, 2, -2][i], M[1] + [0, 0, 1, -1, 1, -1, 2, -2][i]]), why: 'Recheck the coordinates you read from the graph.' } : null),
+    hint: 'Read A and B from the graph. Then average the x-coordinates and average the y-coordinates.', steps };
+} };
 /* ===================== G.6B ===================== */
 const markSide = (F, a, b, n) => { if (n) F.ticks(a, b, n); };
 function markAng(F, V, A, B, n, right) {
@@ -3354,7 +3305,7 @@ S['6b_proof'] = { se: 'G.6B', name: 'Reasons in a two-column proof (drop-down)',
 (function (G) {
 'use strict';
 const D = {
-  '2a_midpoint': 1, '2a_numline': 1, '2a_fraction': 1, '2a_ratio': 2, '6b_which': 1, '6b_free': 1, '6b_need': 2, '6b_proof': 2,
+  '2a_midpoint': 1, '2a_mid_numline': 1, '2a_mid_graph': 1, '6b_which': 1, '6b_free': 1, '6b_need': 2, '6b_proof': 2,
   '2b_classify': 1, '2b_map': 1, '2b_midpoint': 1, '2b_verify': 2, '2b_polygon': 2,
   '2c_parallel': 1, '2c_perp_std': 1, '2c_hv': 1, '2c_perp_dec': 1, '2c_yint': 2, '2c_forms': 3,
   '3b_compose_graph': 1, '3b_preimage': 1, '3b_plot': 2, '3b_rule': 2, '3b_dil_center': 3,
@@ -3388,7 +3339,7 @@ G.FACETS = {
   'G.6A': [{ k: 'par', name: 'Angles from parallel lines and a transversal', w: 4, s: ['6a_aux', '6a_expr', '6a_busy', '6a_chain'] }, { k: 'int', name: 'Intersecting lines: vertical angles, linear pairs, perpendicular rays', w: 3, s: ['6a_linvert', '6a_perp'] }],
   'G.6C': [{ k: 'map', name: 'Rigid motions map one figure onto the other', w: 3, s: ['6c_corresp', '6c_sequence'] }, { k: 'parts', name: 'Corresponding parts of congruent figures', w: 3, s: ['6c_algebra', '6c_statement'] }],
   'G.6D': [{ k: 'iso', name: 'Base angles of isosceles triangles', w: 3, s: ['6d_isosceles', '6d_hard'] }, { k: 'sum', name: 'Triangle angle sum and exterior angles', w: 2, s: ['6d_anglesum', '6d_exterior'] }, { k: 'py', name: 'Pythagorean Theorem, its converse, and its proof', w: 1.5, s: ['6d_pythag', '6d_pyproof'] }, { k: 'mid', name: 'Midsegments', w: 2, s: ['6d_midsegment'] }, { k: 'median', name: 'Medians and the centroid', w: 2, s: ['6d_centroid'] }],
-  'G.2A': [{ k: 'mid', name: 'Midpoint of a segment', w: 2, s: ['2a_midpoint'] }, { k: 'frac', name: 'A point a fraction of the way along a segment, on a number line or the coordinate plane', w: 3, s: ['2a_fraction', '2a_numline', '2a_ratio'] }],
+  'G.2A': [{ k: 'mid', name: 'Midpoint of a segment', w: 2, s: ['2a_midpoint'] }, { k: 'graph', name: 'Midpoint on a number line or a graph', w: 2, s: ['2a_mid_numline', '2a_mid_graph'] }],
   'G.6B': [{ k: 'name', name: 'Name the shortcut: SSS, SAS, ASA, AAS, HL', w: 3, s: ['6b_which', '6b_free'] }, { k: 'need', name: 'What else is needed, and reasons in a proof', w: 2, s: ['6b_need', '6b_proof'] }],
   'G.11A': [{ k: 'fwd', name: 'Find the area: A = ½aP', w: 3, s: ['11a_area', '11a_units', '11a_radius', '11a_context'] }, { k: 'back', name: 'Work backward to the apothem or side', w: 2, s: ['11a_apothem', '11a_side'] }]
 };
@@ -3433,16 +3384,15 @@ const STRANDS = {
   fig: { name: 'Two-Dimensional Figures', short: 'Polygon area', of: 2 }
 };
 const TEKS = [
-  { id: 'G.2A', code: '2A', items: 2, extra: true, strand: 'coord', short: 'Midpoint & partitions', title: 'Midpoints and Fractional Distance',
-    teks: 'Determine the coordinates of a point that is a given fractional distance less than one from one end of a line segment to the other in one- and two-dimensional coordinate systems, including finding the midpoint.',
-    why: 'Find the change from the start to the end, take the fraction of it, and add it to the start. The midpoint is the fraction one half.',
+  { id: 'G.2A', code: '2A', items: 2, extra: true, strand: 'coord', short: 'Midpoint', title: 'Midpoint of a Segment',
+    teks: 'Determine the coordinates of the midpoint of a line segment in one- and two-dimensional coordinate systems. (Semester 1 covers the midpoint only.)',
+    why: 'The midpoint is halfway between the endpoints. Average the x-coordinates and average the y-coordinates.',
     moves: [
       { t: 'Midpoint: average the coordinates', rule: '`M = ({x₁ + x₂/2}, {y₁ + y₂/2})`. Add the two x-coordinates and divide by 2. Then do the same for the y-coordinates.', ex: ['2a_midpoint', 3], watch: 'Subtracting instead of adding gives half the change, not the midpoint. That is always one of the wrong choices.' },
-      { t: 'A fraction of the way on a number line', rule: 'Find the distance from A to B. Multiply it by the fraction. Start at A and move that far toward B.', ex: ['2a_numline', 2], watch: 'Start from the point the question names. `{1/4}` of the way from A is `{3/4}` of the way from B.' },
-      { t: 'A fraction of the way on the coordinate plane', rule: 'Find the change in x and the change in y from A to B. Multiply each change by the fraction. Add the results to A.', ex: ['2a_fraction', 5], watch: 'Multiplying the coordinates of B by the fraction skips the starting point. Always start at A.' },
-      { t: 'Partition in a ratio', rule: 'A ratio of `2 : 3` cuts the segment into 2 + 3 = 5 equal parts. The point is 2 parts from A, so it is `{2/5}` of the way from A to B.', ex: ['2a_ratio', 2], watch: 'The ratio `2 : 3` is not the fraction `{2/3}`. Add the parts to get the denominator.' }
-    ], tip: 'Sketch the segment and estimate where the point should land. Less than one half of the way means the point is closer to the start.' },
-  { id: 'G.2B', code: '2B', items: 2, strand: 'coord', short: 'Distance & slope', title: 'Distance, Slope, and Midpoint',
+      { t: 'Midpoint on a number line', rule: 'Add the two coordinates and divide by 2. The midpoint is the same distance from both endpoints.', ex: ['2a_mid_numline', 2], watch: 'Half the distance from A to B is not the midpoint. Start at A and move that far, or average the coordinates.' },
+      { t: 'Midpoint of a graphed segment', rule: 'Read the coordinates of both endpoints from the graph. Then average them. You can also count halfway across and halfway up or down from one endpoint.', ex: ['2a_mid_graph', 5], watch: 'Read each point as (x, y): across first, then up or down.' }
+    ], tip: 'The midpoint formula is on the formula chart. Check that your answer sits halfway between the endpoints.' },
+  { id: 'G.2B', code: '2B', items: 2, strand: 'coord', short: 'Distance & Slope', title: 'Distance, Slope, and Midpoint',
     teks: 'Derive and use the distance, slope, and midpoint formulas to verify geometric relationships, including congruence of segments and parallelism or perpendicularity of pairs of lines.',
     why: 'Use the three coordinate formulas as evidence. Slopes prove parallel or perpendicular. Distances prove congruent. The midpoint works forward and backward.',
     moves: [
@@ -3766,7 +3716,7 @@ function home() {
   <details class="teacher">
     <summary>Teacher notes</summary>
     <ul>
-      <li><b>32 questions</b> is the 28-question blueprint set plus 2 questions each on G.2A (midpoints and fractional distance) and G.6B (proving triangles congruent). Those two SEs appear only on the 32-question set and in their own practice.</li>
+      <li><b>32 questions</b> is the 28-question blueprint set plus 2 questions each on G.2A (midpoint of a segment) and G.6B (proving triangles congruent). Those two SEs appear only on the 32-question set and in their own practice.</li>
       <li>Students choose whether to see answers <b>after each question</b> or <b>at the end</b>. At the end works like the real ACP: they can skip, flag, and change answers, and nothing is graded until they finish. Your Sheet shows “answers at end” in the Difficulty column.</li>
       <li><b>Targeted practice</b>: students pick topics and 10 or 20 questions. Everyone starts at Medium. Two right in a row without a hint moves them up a level, and a miss moves them down one. Finished sets go to your Sheet too, with “Targeted practice” and the level they ended at in the Difficulty column.</li>
       <li><b>My progress</b> lists every result saved in the student’s browser (up to 30) and their totals on each TEKS.</li>
