@@ -3300,12 +3300,59 @@ S['6b_proof'] = { se: 'G.6B', name: 'Reasons in a two-column proof (drop-down)',
     opts, rows: K.rows.slice(1).map((r, i) => ({ t: `${i + 2}. ${r[0]}`, ans: r[1] - 1 })),
     hint: 'Each given fact turns into congruent parts: a midpoint gives two segments, a bisector gives two angles. Then look for parts the figure gives for free.', steps: stepsAll };
 } };
+
+/* ===================== G.6A: quadrilaterals inscribed in a circle ===================== */
+const QN = ['WXYZ', 'ABCD', 'PQRS', 'JKLM', 'EFGH', 'RSTU'];
+function cycScene() {
+  let arcs;
+  for (let t = 0; t < 500; t++) { arcs = [0, 0, 0].map(() => 2 * rint(25, 70)); const last = 360 - arcs.reduce((x, y) => x + y, 0); if (last < 50 || last > 140) continue; arcs.push(last); const ang = [0, 1, 2, 3].map(i => (arcs[(i + 1) % 4] + arcs[(i + 2) % 4]) / 2); if (ang.every(a => a >= 55 && a <= 125) && new Set(ang).size === 4) break; }
+  // vertex i sits between arc i-1 and arc i; its angle intercepts the two arcs not touching it
+  const ang = [0, 1, 2, 3].map(i => (arcs[(i + 1) % 4] + arcs[(i + 2) % 4]) / 2);
+  const start = rint(100, 160), pos = []; let th = start;
+  for (let i = 0; i < 4; i++) { pos.push(th); th -= arcs[i]; }
+  return { ang, pos, nm: pick(QN).split('') };
+}
+function cycFig(sc, labels) {
+  const F = new Fig(), R = 100, pt = a => [R * Math.cos(a * Math.PI / 180), -R * Math.sin(a * Math.PI / 180)];
+  F.raw(`<circle class="ln" cx="0" cy="0" r="${R}" fill="none"/>`, [[-R, -R], [R, R]]);
+  const P = sc.pos.map(pt); F.poly(P, 'pf');
+  F.dot([0, 0]); F.text([10, -6], 'O', { cls: 'lb b', size: 14 });
+  P.forEach((q, i) => { F.dot(q); F.at(q, sc.pos[i], 15, sc.nm[i], { cls: 'lb b' }); if (labels && labels[i]) { const c = [0.62 * q[0], 0.62 * q[1]]; F.text([c[0], c[1] + 5], labels[i], { size: 13, plain: !/`/.test(labels[i]) }); } });
+  return F.svg(`Quadrilateral ${sc.nm.join('')} with all four vertices on circle O`, { scale: 1.1 });
+}
+S['6a_cyclic'] = { se: 'G.6A', name: 'Quadrilateral inscribed in a circle', w: 2, gen() {
+  const sc = cycScene(), nm = sc.nm, A = sc.ang, i = rint(0, 3), o = (i + 2) % 4, n1 = (i + 1) % 4, quad = nm.join('');
+  const kind = G.LV >= 2 ? pick(['alg', 'alg', 'adj', 'one']) : pick(['one', 'one', 'adj', 'alg']);
+  const lead = `Quadrilateral ${quad} is inscribed in circle O.`;
+  const rule = ['A quadrilateral inscribed in a circle has opposite angles that are supplementary: they add to 180°.', null];
+  if (kind === 'one') {
+    return { type: 'num', lead: lead + ` \`m∠${nm[i]} = ${A[i]}°\`.`, fig: cycFig(sc), q: `What is the measure of ∠${nm[o]} in degrees?`.replace(/∠(\w)/, '`∠$1`'), answer: A[o], unit: 'degrees', pre: `m∠${nm[o]} =`,
+      traps: [{ v: A[i], why: 'Opposite angles of an inscribed quadrilateral are supplementary, not congruent.' }, { v: 360 - A[i], why: 'Opposite angles add to 180°, not 360°.' }, { v: 90 - A[i], why: 'Opposite angles add to 180°, not 90°.' }],
+      hint: `∠${nm[i]} and ∠${nm[o]} are opposite angles.`, steps: [rule, [`∠${nm[i]} and ∠${nm[o]} are opposite.`, `m∠${nm[o]} = 180° - ${A[i]}° = ${A[o]}°`]] };
+  }
+  if (kind === 'adj') {
+    const fig = cycFig(sc);
+    return { type: 'mc', lead: lead + ` \`m∠${nm[i]} = ${A[i]}°\` and \`m∠${nm[n1]} = ${A[n1]}°\`.`, fig, q: `What is \`m∠${nm[(n1 + 2) % 4]}\`?`,
+      choices: G.numMC({ v: A[(n1 + 2) % 4] }, [{ v: A[o], why: `That is the angle opposite ∠${nm[i]}. Find the angle opposite ∠${nm[n1]}.` }, { v: A[n1], why: 'Opposite angles are supplementary, not congruent.' }, { v: 360 - A[i] - A[n1], why: 'That is the sum of the other two angles. Use the opposite angle instead.' }, { v: 180 - A[i], why: `∠${nm[i]} is not opposite ∠${nm[(n1 + 2) % 4]}.` }], '°'),
+      hint: `Which given angle is across from ∠${nm[(n1 + 2) % 4]}?`, steps: [rule, [`∠${nm[n1]} and ∠${nm[(n1 + 2) % 4]} are opposite.`, `180° - ${A[n1]}° = ${A[(n1 + 2) % 4]}°`]] };
+  }
+  // algebra: opposite angles as expressions
+  let a, b, c, d, x;
+  for (let t = 0; t < 400; t++) { a = rint(2, 5); c = rint(1, 4); x = rint(8, 30); if (a === c) continue; b = A[i] - a * x; d = A[o] - c * x; if (Math.abs(b) <= 40 && Math.abs(d) <= 40 && b && d) break; }
+  const ex = (k, m) => `${k}x ${m < 0 ? '-' : '+'} ${Math.abs(m)}`;
+  const wantX = G.rnd() < 0.4, ans = wantX ? x : A[i], intv = v => Number.isInteger(v) ? v : NaN;
+  const steps = [rule, [`∠${nm[i]} and ∠${nm[o]} are opposite, so their measures add to 180.`, `(${ex(a, b)}) + (${ex(c, d)}) = 180`], ['Combine like terms.', `${a + c}x ${b + d < 0 ? '-' : '+'} ${Math.abs(b + d)} = 180`], ['Solve for x.', `${a + c}x = ${180 - b - d}`], ['Divide.', `x = ${x}`]];
+  if (!wantX) steps.push(['Substitute to find the angle.', `m∠${nm[i]} = ${a}(${x}) ${b < 0 ? '-' : '+'} ${Math.abs(b)} = ${A[i]}°`]);
+  return { type: 'mc', lead: lead + ` \`m∠${nm[i]} = (${ex(a, b)})°\` and \`m∠${nm[o]} = (${ex(c, d)})°\`.`, fig: cycFig(sc), q: wantX ? 'What is the value of x?' : `What is \`m∠${nm[i]}\`?`,
+    choices: G.numMC({ v: ans }, wantX ? [{ v: intv((360 - b - d) / (a + c)), why: 'Opposite angles add to 180°, not 360°.' }, { v: intv((d - b) / (a - c)), why: 'Opposite angles are supplementary, not congruent.' }, { v: A[i], why: 'That is the angle measure, not x.' }] : [{ v: x, why: 'That is x. Substitute it to find the angle.' }, { v: A[o], why: `That is m∠${nm[o]}. The question asks for m∠${nm[i]}.` }, { v: intv(a * ((d - b) / (a - c)) + b), why: 'Opposite angles are supplementary, not congruent.' }], wantX ? '' : '°'),
+    hint: 'Opposite angles of an inscribed quadrilateral add to 180°. Write an equation.', steps };
+} };
 })(GEO);
 
 (function (G) {
 'use strict';
 const D = {
-  '2a_midpoint': 1, '2a_mid_numline': 1, '2a_mid_graph': 1, '6b_which': 1, '6b_free': 1, '6b_need': 2, '6b_proof': 2,
+  '2a_midpoint': 1, '2a_mid_numline': 1, '2a_mid_graph': 1, '6b_which': 1, '6b_free': 1, '6b_need': 2, '6b_proof': 2, '6a_cyclic': 1,
   '2b_classify': 1, '2b_map': 1, '2b_midpoint': 1, '2b_verify': 2, '2b_polygon': 2,
   '2c_parallel': 1, '2c_perp_std': 1, '2c_hv': 1, '2c_perp_dec': 1, '2c_yint': 2, '2c_forms': 3,
   '3b_compose_graph': 1, '3b_preimage': 1, '3b_plot': 2, '3b_rule': 2, '3b_dil_center': 3,
@@ -3336,7 +3383,7 @@ G.FACETS = {
   'G.5B': [{ k: 'arcs', name: 'Name a construction from its arcs', w: 4, s: ['5b_identify'] }, { k: 'words', name: 'Match a construction to its result', w: 2, s: ['5b_words'] }, { k: 'steps', name: 'Order the steps of a construction', w: 2, s: ['5b_steps'] }],
   'G.5C': [{ k: 'pbis', name: 'Perpendicular bisector: halves and right angles', w: 3, s: ['5c_double', '5c_twopart'] }, { k: 'abis', name: 'Angle bisector: two equal angles', w: 3, s: ['5c_bisector'] }, { k: 'name', name: 'Which special segment a construction makes', w: 2, s: ['5c_name'] }, { k: 'must', name: 'What a construction guarantees', w: 2, s: ['5c_must'] }],
   'G.5D': [{ k: 'third', name: 'Range for the third side', w: 3, s: ['5d_possible', '5d_range', '5d_count'] }, { k: 'sets', name: 'Which three lengths make a triangle', w: 2, s: ['5d_sets'] }],
-  'G.6A': [{ k: 'par', name: 'Angles from parallel lines and a transversal', w: 4, s: ['6a_aux', '6a_expr', '6a_busy', '6a_chain'] }, { k: 'int', name: 'Intersecting lines: vertical angles, linear pairs, perpendicular rays', w: 3, s: ['6a_linvert', '6a_perp'] }],
+  'G.6A': [{ k: 'par', name: 'Angles from parallel lines and a transversal', w: 4, s: ['6a_aux', '6a_expr', '6a_busy', '6a_chain'] }, { k: 'int', name: 'Intersecting lines: vertical angles, linear pairs, perpendicular rays', w: 3, s: ['6a_linvert', '6a_perp'] }, { k: 'cyc', name: 'Opposite angles of a quadrilateral inscribed in a circle', w: 1.5, s: ['6a_cyclic'] }],
   'G.6C': [{ k: 'map', name: 'Rigid motions map one figure onto the other', w: 3, s: ['6c_corresp', '6c_sequence'] }, { k: 'parts', name: 'Corresponding parts of congruent figures', w: 3, s: ['6c_algebra', '6c_statement'] }],
   'G.6D': [{ k: 'iso', name: 'Base angles of isosceles triangles', w: 3, s: ['6d_isosceles', '6d_hard'] }, { k: 'sum', name: 'Triangle angle sum and exterior angles', w: 2, s: ['6d_anglesum', '6d_exterior'] }, { k: 'py', name: 'Pythagorean Theorem, its converse, and its proof', w: 1.5, s: ['6d_pythag', '6d_pyproof'] }, { k: 'mid', name: 'Midsegments', w: 2, s: ['6d_midsegment'] }, { k: 'median', name: 'Medians and the centroid', w: 2, s: ['6d_centroid'] }],
   'G.2A': [{ k: 'mid', name: 'Midpoint of a segment', w: 2, s: ['2a_midpoint'] }, { k: 'graph', name: 'Midpoint on a number line or a graph', w: 2, s: ['2a_mid_numline', '2a_mid_graph'] }],
@@ -3477,6 +3524,7 @@ const TEKS = [
       { t: 'The auxiliary line', rule: 'When a path bends between two parallel lines, draw a third parallel line through the bend. It splits the bend into two alternate interior angles.', ex: ['6a_aux', 3], watch: 'If a marked angle is on the outside, use its supplement first.' },
       { t: 'The supplement trap', rule: 'Solve for x, find the angle, then check if the question asks for that angle or its neighbor. The answer is often the supplement.', ex: ['6a_expr', 4], watch: 'On real ACP items: choice A is x, choice B is the angle you found, and the answer is its supplement.' },
       { t: 'Busy figures: one transversal at a time', rule: 'When a figure has extra lines, pick the transversal that goes through the angle you need. Trace it from one parallel line to the next. The angles you need sit where THAT transversal crosses the parallel lines. A line perpendicular to the parallel lines makes a right angle with every one of them, so it builds right triangles.', ex: ['6a_busy', 1], watch: 'Measures on other transversals are there to distract you. Read the three letters: the middle letter is the vertex.' },
+      { t: 'Quadrilaterals inscribed in a circle', rule: 'When all four vertices of a quadrilateral are on a circle, the quadrilateral is inscribed in the circle. Its opposite angles are supplementary: they add to 180°.', ex: ['6a_cyclic', 3], watch: 'Opposite angles add to 180°. They are not equal, and angles next to each other have no rule.' },
       { t: 'Snake Angle Problems', rule: 'Supplement, auxiliary line, alternate interior angles, linear pair, bisector. Write every angle on the figure as soon as you know it.', ex: ['6a_chain', 5, 40777], watch: 'A bisector means HALF. Setting the expression equal to the whole angle is a trap.' }
     ], tip: 'Before you calculate, label each angle acute or obtuse. Parallel lines only make two sizes of angle.' },
   { id: 'G.6B', code: '6B', items: 1, extra: true, strand: 'proof', short: 'Congruence Proofs', title: 'Proving Triangles Congruent',
@@ -3724,7 +3772,7 @@ function home() {
       <li>When an SE gets more than one question, each comes from a different property the SE names (a parallel line and a perpendicular line for G.2C, a forward and a backward area problem for G.11A), so a right answer shows the idea, not one memorized problem type. In G.5A, one question is almost always polygon interior and exterior angles. The full list is under <b>What each SE tests</b> below.</li>
       <li>Students pick Medium, Hard, or Extra hard before they start. <b>Medium</b> is built to the level of the SchoolCity example items (2627000337): mostly multiple choice, 4 to 6 typed answers, and 1 or 2 of the three hardest example types (two-polygon chain, ex. 21; five-step parallel line chain, ex. 13; isosceles-parallel triangle, ex. 15). <b>Hard</b> uses the multi-step version of each SE, 6 to 9 typed answers, select-all and drop-down items, and at least 2 of the hardest types. <b>Extra hard</b> uses the hardest variant of every SE, all 3 hardest types, and turns most numeric multiple choice into typed entry.</li>
       <li>Students can skip questions and jump to any number in the grid, in any order. Each answer can be checked only once: checking shows right or wrong, why, and the worked steps, and then that question locks. They can finish early; answered but unchecked questions are graded as they are, and blank ones count as missed.</li>
-      <li>Numbers change every time, so students can retake it. Struck content (quadrilateral diagonals, circle angles, the equidistance proof) is never used.</li>
+      <li>Numbers change every time, so students can retake it. Struck content (quadrilateral diagonals, other circle angles, the equidistance proof) is never used. Quadrilaterals inscribed in a circle are practiced under G.6A, as in the example items.</li>
       <li>Before the review starts, students enter their name and class period. The completion record shows the difficulty, start time, finish time, time taken, score, and an attempt ID that matches the row in your Sheet. Ask students to show you that screen or use <b>Copy my results</b> to paste it into Google Classroom.</li>
       <li>${LOG_URL ? 'Google Sheet logging is <b>on</b>: each start and finish is sent to your sheet.' : 'To log every attempt to a Google Sheet automatically, follow the steps in <code>logging-apps-script.gs</code> and paste the web app address into <code>logUrl</code> in <code>settings.js</code> (in the main folder).'}</li>
       <li>Progress and results are saved in each student’s own browser. Nothing else is collected.</li>
