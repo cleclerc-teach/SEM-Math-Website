@@ -24,13 +24,13 @@ function doPost(e) {
     const ev = JSON.parse(e.postData.contents);
     const ss = book_();
     if (ev.event === 'finish') {
-      const sh = sheet_(ss, 'Finished', ['Received', 'Name', 'Period', 'Difficulty', 'Started', 'Finished', 'Time taken', 'Score', 'Out of', 'Percent', 'Missed'].concat(TEKS_ORDER));
+      const sh = sheet_(ss, 'Finished', ['Received', 'First name', 'Last name', 'Period', 'Difficulty', 'Started', 'Finished', 'Time taken', 'Score', 'Out of', 'Percent', 'Missed'].concat(TEKS_ORDER));
       const per = ev.per || {};
-      sh.appendRow([new Date(), ev.name, ev.period, ev.mode, ev.startLocal, ev.endLocal, ev.timeTaken, ev.score, ev.total, ev.pct / 100, ev.missed || ''].concat(TEKS_ORDER.map(k => per[k] || '')));
-      sh.getRange(sh.getLastRow(), 10).setNumberFormat('0%');
+      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.mode, ev.startLocal, ev.endLocal, ev.timeTaken, ev.score, ev.total, ev.pct / 100, ev.missed || '']).concat(TEKS_ORDER.map(k => per[k] || '')));
+      sh.getRange(sh.getLastRow(), 11).setNumberFormat('0%');
     } else if (ev.event === 'start') {
-      const sh = sheet_(ss, 'Started', ['Received', 'Name', 'Period', 'Difficulty', 'Started']);
-      sh.appendRow([new Date(), ev.name, ev.period, ev.mode, ev.startLocal]);
+      const sh = sheet_(ss, 'Started', ['Received', 'First name', 'Last name', 'Period', 'Difficulty', 'Started']);
+      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.mode, ev.startLocal]));
     }
     return ContentService.createTextOutput('ok');
   } finally {
@@ -42,8 +42,8 @@ function doPost(e) {
 function doGet(e) {
   const ss = book_();
   if (e && e.parameter && e.parameter.test) {
-    const sh = sheet_(ss, 'Started', ['Received', 'Name', 'Period', 'Difficulty', 'Started']);
-    sh.appendRow([new Date(), 'TEST ROW (delete me)', '', '', '']);
+    const sh = sheet_(ss, 'Started', ['Received', 'First name', 'Last name', 'Period', 'Difficulty', 'Started']);
+    sh.appendRow([new Date(), 'TEST', 'ROW (delete me)', '', '', '']);
   }
   return ContentService.createTextOutput('The ACP Prep log is running. Results go to: ' + ss.getName() + '  ' + ss.getUrl());
 }
@@ -59,6 +59,12 @@ function book_() {
   const ss = SpreadsheetApp.create('ACP Prep Log');
   props.setProperty('SHEET_ID', ss.getId());
   return ss;
+}
+
+// The site sends the name as "Mar Gar" (first 3 letters of each). Split it into two columns.
+function names_(name) {
+  const parts = String(name || '').trim().split(/\s+/);
+  return [parts[0] || '', parts.slice(1).join(' ')];
 }
 
 function sheet_(ss, name, header) {
