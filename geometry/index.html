@@ -366,6 +366,8 @@ p { margin: 0 0 .75rem; }
 /* mixed review */
 .signin { display: grid; gap: 1.1rem; max-width: 30rem; }
 .field { display: grid; gap: .3rem; }
+.namerow { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+.namerow input { text-transform: capitalize; font-family: var(--f-mono); letter-spacing: .08em; }
 .field label, .modes legend { font-weight: 600; }
 .field input, .field select { padding: .6rem .75rem; border: 1.5px solid var(--ink); background: var(--sheet); font-size: 1.05rem; border-radius: 0; }
 .field input:focus, .field select:focus { border-color: var(--npb); outline: none; box-shadow: 0 0 0 3px var(--npb-soft); }
@@ -3649,7 +3651,8 @@ function historyHTML() {
 function signIn() {
   const w = saved.who || {};
   return `<form class="signin card" id="signin" autocomplete="off" novalidate>
-    <div class="field"><label for="st-name">First and last name</label><input id="st-name" name="name" type="text" maxlength="60" value="${esc(w.name || '')}" placeholder="First Last" autocomplete="name"></div>
+    <div class="namerow"><div class="field"><label for="st-first">First 3 letters of your first name</label><input id="st-first" name="first3" type="text" maxlength="3" value="${esc((w.name || '').split(' ')[0] || '')}" placeholder="e.g. Mar" autocomplete="off" autocapitalize="words" spellcheck="false"></div>
+    <div class="field"><label for="st-last">First 3 letters of your last name</label><input id="st-last" name="last3" type="text" maxlength="3" value="${esc((w.name || '').split(' ')[1] || '')}" placeholder="e.g. Gar" autocomplete="off" autocapitalize="words" spellcheck="false"></div></div>
     <div class="field"><label for="st-per">Class period</label><select id="st-per" name="period"><option value="">Choose your period</option>${PERIODS.map(p => `<option${w.period === p ? ' selected' : ''}>${p}</option>`).join('')}</select></div>
     <fieldset class="modes"><legend>Length</legend><div class="mode-row">${LENS.map(n => `<label class="mode"><input type="radio" name="len" value="${n}"${(+w.len || 28) === n ? ' checked' : ''}><span>${n} questions</span></label>`).join('')}</div></fieldset>
     <fieldset class="modes"><legend>Difficulty</legend><div class="mode-row">${[1, 2, 3].map(m => `<label class="mode"><input type="radio" name="mode" value="${m}"${(+w.mode || 1) === m ? ' checked' : ''}><span>${G.MODES[m].name}</span></label>`).join('')}</div></fieldset>
@@ -3812,7 +3815,7 @@ document.addEventListener('click', e => {
   if (a === 'fin-arm') { S.armFinish = true; render(); const f = document.getElementById('finarm'); if (f) f.scrollIntoView({ block: 'center' }); return; }
   if (a === 'fin-no') { S.armFinish = false; render(); return; }
   if (a === 'timer') { S.hideTimer = !S.hideTimer; render(); return; }
-  if (a === 'again') { S.justDone = null; render(true); const n = document.getElementById('st-name'); if (n) n.focus(); return; }
+  if (a === 'again') { S.justDone = null; render(true); const n = document.getElementById('st-first'); if (n) n.focus(); return; }
   if (a === 'copy') { const L = lastResult(); if (!L) return; const txt = resultText(L); const done = () => { S.copied = true; render(); }; if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => { prompt0(txt); }); else prompt0(txt); return; }
   if (a === 'fc') { S.fc = !S.fc; render(); return; }
   if (a === 'ex-next' || a === 'ex-all' || a === 'ex-reset') {
@@ -3849,10 +3852,14 @@ document.addEventListener('toggle', e => { if (e.target.matches && e.target.matc
 /* Sign-in runs from a click (and Enter), not a form submission: the published page's sandbox blocks form submissions. */
 document.addEventListener('submit', e => { if (e.target.id === 'signin') { e.preventDefault(); doSignIn(); } });
 function doSignIn() {
-  const name = document.getElementById('st-name').value.replace(/\s+/g, ' ').trim().split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1) : w).join(' '), period = document.getElementById('st-per').value;
+  const cap = v => v ? v[0].toUpperCase() + v.slice(1).toLowerCase() : v;
+  const f3 = document.getElementById('st-first').value.replace(/\s+/g, ''), l3 = document.getElementById('st-last').value.replace(/\s+/g, '');
+  const three = v => /^\p{L}{3}$/u.test(v);
+  const name = cap(f3) + ' ' + cap(l3), period = document.getElementById('st-per').value;
   const mode = +((document.querySelector('input[name="mode"]:checked') || {}).value || 1), len = +((document.querySelector('input[name="len"]:checked') || {}).value || 28);
   saved.who = { name, period, mode, len };
-  if (name.split(' ').filter(Boolean).length < 2) { S.signErr = 'Type your first and last name.'; render(); document.getElementById('st-name').focus(); return; }
+  if (!three(f3)) { S.signErr = 'Type exactly 3 letters from the start of your first name (example: Maria → Mar).'; render(); document.getElementById('st-first').focus(); return; }
+  if (!three(l3)) { S.signErr = 'Type exactly 3 letters from the start of your last name (example: Garcia → Gar).'; render(); document.getElementById('st-last').focus(); return; }
   if (!period) { S.signErr = 'Choose your class period.'; render(); document.getElementById('st-per').focus(); return; }
   S.signErr = ''; startTest(name, period, mode, len); render(true);
 }
