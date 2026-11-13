@@ -1594,9 +1594,9 @@ const isDone = sid => !!(saved.st[sid] && saved.st[sid].d);
 
 /* ---------- the blueprint and the TEK pages ---------- */
 const STRANDS = {
-  fig: { name: 'Functions, Complex Numbers, and Notation', short: 'Functions & numbers', of: 6 },
+  fig: { name: 'Functions and Notation', short: 'Functions & notation', of: 4 },
   coord: { name: 'Systems of Equations and Inequalities', short: 'Systems', of: 6 },
-  logic: { name: 'Quadratic Functions, Equations, and Inequalities', short: 'Quadratics', of: 8 },
+  logic: { name: 'Quadratics and Complex Numbers', short: 'Quadratics', of: 10 },
   proof: { name: 'Absolute Value Functions, Equations, and Inequalities', short: 'Absolute value', of: 8 }
 };
 const ORDER = ['fig', 'coord', 'logic', 'proof'];
@@ -1699,7 +1699,7 @@ const TEKS = [
       { t: 'Greater than: OR', rule: '`|x - 2| > 5` becomes `x - 2 < -5` or `x - 2 > 5`. The solution is two rays going outward.', ex: ['6f_solve', 8], watch: 'Isolate the absolute value first, just like with equations.' },
       { t: 'On a number line', rule: 'Use an open circle for `<` or `>` and a closed circle for `≤` or `≥`. Shade between for AND, outward for OR.', ex: ['6f_numberline', 2], watch: 'Check the dots and the shape separately. Wrong choices change one of them.' }
     ], tip: 'Test a number from your answer in the original inequality.' },
-  { id: '2A.7A', code: '7A', items: 2, strand: 'fig', short: 'Complex numbers', title: 'Add, Subtract, and Multiply Complex Numbers',
+  { id: '2A.7A', code: '7A', items: 2, strand: 'logic', short: 'Complex numbers', title: 'Add, Subtract, and Multiply Complex Numbers',
     teks: 'Add, subtract, and multiply complex numbers.',
     why: 'Treat i like a variable, then replace `i^2` with `-1` at the end.',
     moves: [
@@ -1866,7 +1866,7 @@ const day = t => new Date(t).toLocaleDateString(undefined, { weekday: 'short', m
 function testBar() {
   let cells = '';
   for (const k of ORDER) for (const t of TEKS.filter(x => x.strand === k)) for (let i = 0; i < t.items; i++) cells += `<i class="c-${t.strand}" title="${esc(t.short)}"></i>`;
-  return `<div class="scale" role="img" aria-label="The 28 questions: 6 functions and complex numbers, 6 systems, 8 quadratics, 8 absolute value">${cells}</div><div class="scale-n"><span>1</span><span>14</span><span>28</span></div>
+  return `<div class="scale" role="img" aria-label="The 28 questions: 4 functions and notation, 6 systems, 10 quadratics and complex numbers, 8 absolute value">${cells}</div><div class="scale-n"><span>1</span><span>14</span><span>28</span></div>
     <ul class="key">${ORDER.map(k => `<li><i class="c-${k}"></i><b>${STRANDS[k].of}</b>${STRANDS[k].short}</li>`).join('')}</ul>`;
 }
 function mixNote() {
