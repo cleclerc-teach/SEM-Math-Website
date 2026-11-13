@@ -3056,7 +3056,7 @@ S['11a_context'] = { se: 'G.11A', name: 'Regular polygon area in context (entry)
    2 = hard: multi-step variants, select-all, drop-downs, and more typed answers.
    3 = extra hard: the hardest item types and variants that go past the example set. */
 /* G.2A (midpoint of a segment) and G.6B (proving triangles congruent).
-   These two SEs are extra: they appear on the 32-question review and in practice, not on the 28-question blueprint set. */
+   These two SEs are extra: they appear on the 30-question review (1 each) and in practice, not on the 15-question set. */
 (function (G) {
 'use strict';
 const { rint, pick, nz, shuffle, sample, gcd, ns, sn, grid, mc, Fig, add, sub, len, angOf, dir, mid } = G;
@@ -3384,7 +3384,7 @@ const STRANDS = {
   fig: { name: 'Two-Dimensional Figures', short: 'Polygon area', of: 2 }
 };
 const TEKS = [
-  { id: 'G.2A', code: '2A', items: 2, extra: true, strand: 'coord', short: 'Midpoint', title: 'Midpoint of a Segment',
+  { id: 'G.2A', code: '2A', items: 1, extra: true, strand: 'coord', short: 'Midpoint', title: 'Midpoint of a Segment',
     teks: 'Determine the coordinates of the midpoint of a line segment in one- and two-dimensional coordinate systems. (Semester 1 covers the midpoint only.)',
     why: 'The midpoint is halfway between the endpoints. Average the x-coordinates and average the y-coordinates.',
     moves: [
@@ -3401,7 +3401,7 @@ const TEKS = [
       { t: 'Midpoint backward', rule: 'If you know an endpoint and the midpoint, find the step from the endpoint to the midpoint. Then take that same step again.', ex: ['2b_midpoint', 4], watch: 'Averaging A and M gives a point between A and M. B is on the other side of M.' },
       { t: 'Verify a claim with evidence', rule: 'Congruent segments: equal distances. A right angle: slopes that multiply to `-1`. Check every statement with a number, not a picture.', ex: ['2b_verify', 3], watch: 'Compare squared distances (like 20 and 20) so you never have to round a square root.' }
     ], tip: 'All three formulas are on the formula chart. The test checks whether you know which one answers the question.' },
-  { id: 'G.2C', code: '2C', items: 3, strand: 'coord', short: 'Line equations', title: 'Parallel and Perpendicular Lines',
+  { id: 'G.2C', code: '2C', items: 3, strand: 'coord', short: 'Line Equations', title: 'Parallel and Perpendicular Lines',
     teks: 'Determine an equation of a line parallel or perpendicular to a given line that passes through a given point.',
     why: 'Tied for the most questions on the test. Get the slope right, then use the point to find the rest. Answers can be in slope-intercept form, standard form, or with decimals.',
     moves: [
@@ -3453,7 +3453,7 @@ const TEKS = [
       { t: 'Read the arcs', rule: 'Ask where the compass point was placed and what each arc measures. Arcs from both ends of a segment find its midpoint. One arc across both sides of an angle starts a bisector or a copy.', ex: ['5b_identify', 13], watch: 'The point can be OFF the line, and the answer is still a perpendicular line through a given point.' },
       { t: 'Steps in order', rule: 'Every construction starts with an arc from the given point or vertex and ends with the straightedge.', ex: ['5b_steps', 2], watch: 'Keeping the same compass width between steps is what makes the construction work.' }
     ], tip: 'Practice each construction once with a real compass. Recognizing the arcs is much easier after you have drawn them.' },
-  { id: 'G.5C', code: '5C', items: 2, strand: 'logic', short: 'Using constructions', title: 'Conjectures from Constructions',
+  { id: 'G.5C', code: '5C', items: 2, strand: 'logic', short: 'Using Constructions', title: 'Conjectures from Constructions',
     teks: 'Use the constructions of congruent segments, congruent angles, angle bisectors, and perpendicular bisectors to make conjectures about geometric relationships.',
     why: 'A construction guarantees something: a midpoint, a right angle, two equal halves. Turn that guarantee into an equation.',
     moves: [
@@ -3461,7 +3461,7 @@ const TEKS = [
       { t: 'Half, then the whole', rule: 'Set the two halves equal, solve for x, substitute, and then check whether the question wants a half or the whole.', ex: ['5c_double', 3], watch: 'Stopping at the half is the most common wrong answer.' },
       { t: 'Bisectors with a squared expression', rule: 'Set the expression equal to HALF of the angle, then take a square root at the end.', ex: ['5c_bisector', 5], watch: 'x² is a choice. So is the half angle. Neither is x.' }
     ], tip: 'Write the guarantee in words before you write an equation: "M is the midpoint, so JM = MK."' },
-  { id: 'G.5D', code: '5D', items: 2, strand: 'logic', short: 'Triangle inequality', title: 'Triangle Inequality Theorem',
+  { id: 'G.5D', code: '5D', items: 2, strand: 'logic', short: 'Triangle Inequality', title: 'Triangle Inequality Theorem',
     teks: 'Verify the Triangle Inequality theorem using constructions and apply the theorem to solve problems.',
     why: 'Any two sides of a triangle add to more than the third. So the third side is between the difference and the sum of the other two.',
     moves: [
@@ -3469,7 +3469,7 @@ const TEKS = [
       { t: 'Strict inequality', rule: 'Write the range with `<`, never `≤`. If the third side is an expression, solve the compound inequality for x.', ex: ['5d_range', 8], watch: 'One wrong choice always uses the two given sides as the bounds.' },
       { t: 'Test a set of lengths', rule: 'Add the two shortest sides. The sum must be greater than the longest side.', ex: ['5d_sets', 4], watch: 'If the two shortest add to exactly the longest, it is not a triangle.' }
     ], tip: 'To count whole-number lengths, list the first and last ones that work. Between 6 and 22 that is 7 through 21, and 21 − 7 + 1 = 15 lengths.' },
-  { id: 'G.6A', code: '6A', items: 3, strand: 'proof', short: 'Angle theorems', title: 'Angles from Intersecting and Parallel Lines',
+  { id: 'G.6A', code: '6A', items: 3, strand: 'proof', short: 'Angle Theorems', title: 'Angles from Intersecting and Parallel Lines',
     teks: 'Verify theorems about angles formed by the intersection of lines and line segments, including vertical angles, and angles formed by parallel lines cut by a transversal and apply these relationships to solve problems.',
     why: 'Tied for the most questions on the test. Linear pairs, vertical angles, and parallel line angles, often chained together, sometimes in a busy figure with extra lines.',
     moves: [
@@ -3479,7 +3479,7 @@ const TEKS = [
       { t: 'Busy figures: one transversal at a time', rule: 'When a figure has extra lines, pick the transversal that goes through the angle you need. Trace it from one parallel line to the next. The angles you need sit where THAT transversal crosses the parallel lines. A line perpendicular to the parallel lines makes a right angle with every one of them, so it builds right triangles.', ex: ['6a_busy', 1], watch: 'Measures on other transversals are there to distract you. Read the three letters: the middle letter is the vertex.' },
       { t: 'Snake Angle Problems', rule: 'Supplement, auxiliary line, alternate interior angles, linear pair, bisector. Write every angle on the figure as soon as you know it.', ex: ['6a_chain', 5, 40777], watch: 'A bisector means HALF. Setting the expression equal to the whole angle is a trap.' }
     ], tip: 'Before you calculate, label each angle acute or obtuse. Parallel lines only make two sizes of angle.' },
-  { id: 'G.6B', code: '6B', items: 2, extra: true, strand: 'proof', short: 'Congruence proofs', title: 'Proving Triangles Congruent',
+  { id: 'G.6B', code: '6B', items: 1, extra: true, strand: 'proof', short: 'Congruence Proofs', title: 'Proving Triangles Congruent',
     teks: 'Prove two triangles are congruent by applying the Side-Angle-Side, Angle-Side-Angle, Side-Side-Side, Angle-Angle-Side, and Hypotenuse-Leg congruence conditions.',
     why: 'Read the marks, add the parts the figure gives you for free, then name the shortcut: SSS, SAS, ASA, AAS, or HL.',
     moves: [
@@ -3496,7 +3496,7 @@ const TEKS = [
       { t: 'Set corresponding parts equal', rule: 'Congruent figures have equal corresponding sides, so write an equation and solve. Clear a fraction by multiplying both sides.', ex: ['6c_algebra', 2], watch: 'Dropping the fraction in front of the parentheses is the classic wrong choice.' },
       { t: 'Name the rigid motions', rule: 'If the vertex letters run the other way around, a reflection is involved. Track one vertex through each choice.', ex: ['6c_sequence', 6], watch: 'A sequence can land on the right spot with the wrong vertex matching. Check A goes to D.' }
     ], tip: 'Write the correspondence as arrows (J → T, K → U, L → V) before reading the choices.' },
-  { id: 'G.6D', code: '6D', items: 2, strand: 'proof', short: 'Triangle theorems', title: 'Triangle Theorems',
+  { id: 'G.6D', code: '6D', items: 2, strand: 'proof', short: 'Triangle Theorems', title: 'Triangle Theorems',
     teks: 'Verify theorems about the relationships in triangles, including proof of the Pythagorean Theorem, the sum of interior angles, base angles of isosceles triangles, midsegments, and medians, and apply these relationships to solve problems.',
     why: 'Angle sum, isosceles base angles, exterior angles, midsegments, the centroid, and the Pythagorean Theorem with its proof. The hardest items stack three of these.',
     moves: [
@@ -3507,7 +3507,7 @@ const TEKS = [
       { t: 'Prove it with area', rule: 'Put four copies of the right triangle inside a square with side a + b. The hypotenuses make a square of area c² in the middle. Find the big area two ways: `(a + b)² = c² + 4({1/2}ab)`. Expand and subtract 2ab from both sides to get `a² + b² = c²`.', ex: ['6d_pyproof', 1], watch: '`(a + b)²` is not `a² + b²`. It has a middle term, 2ab.' },
       { t: 'Stack the theorems (the hardest item type)', rule: 'Isosceles base angles, then corresponding angles from parallel lines, then congruent triangles, then the angle sum.', ex: ['6d_hard', 7, 56877], watch: 'The base angle itself is always a wrong choice. Keep going.' }
     ], tip: 'Midsegments: a segment joining two midpoints is parallel to the third side and half as long.' },
-  { id: 'G.11A', code: '11A', items: 2, strand: 'fig', short: 'Polygon area', title: 'Area of Regular Polygons',
+  { id: 'G.11A', code: '11A', items: 2, strand: 'fig', short: 'Polygon Area', title: 'Area of Regular Polygons',
     teks: 'Apply the formula for the area of regular polygons to solve problems using appropriate units of measure.',
     why: 'One formula, `A = {1/2}aP`. The ACP uses it forward and backward.',
     moves: [
@@ -3518,7 +3518,7 @@ const TEKS = [
 ];
 TEKS.forEach(t => { t.skills = Object.keys(G.SKILLS).filter(id => G.SKILLS[id].se === t.id); });
 const TEK = {}; TEKS.forEach(t => { TEK[t.code] = t; TEK[t.id] = t; });
-const worth = t => t.extra ? `${t.items} of 32 on the long review` : `${t.items} of 28 questions`;
+const worth = t => t.extra ? `${t.items} of 30 on the mixed review` : `${t.items} of 28 questions`;
 const ALL = Object.keys(G.SKILLS);
 const HABITS = [
   ['Answer the question asked', 'x is almost always a wrong choice. So is the half when they want the whole, and the angle you found when they want its neighbor.'],
@@ -3670,7 +3670,7 @@ function testBar() {
     <ul class="key">${['logic', 'coord', 'proof', 'fig'].map(k => `<li><i class="c-${k}"></i><b>${STRANDS[k].of}</b>${STRANDS[k].short}</li>`).join('')}</ul>`;
 }
 function mixNote() {
-  const L = lastResult(); if (!L) return '32, 28, or 15 questions. See the answers after each one or at the end.';
+  const L = lastResult(); if (!L) return '30 or 15 questions. See the answers after each one or at the end.';
   const top = rankNeed(L.res).weak[0];
   return `Last time: ${L.score} of ${L.n} on ${modeName(L.mode)}${L.secs ? ' in ' + fmtTime(L.secs) : ''}.` + (top ? ` Study first: ${esc(top.t.short)}.` : ' Every one right.');
 }
@@ -3716,11 +3716,11 @@ function home() {
   <details class="teacher">
     <summary>Teacher notes</summary>
     <ul>
-      <li><b>32 questions</b> is the 28-question blueprint set plus 2 questions each on G.2A (midpoint of a segment) and G.6B (proving triangles congruent). Those two SEs appear only on the 32-question set and in their own practice.</li>
+      <li><b>30 questions</b> is the 28-question blueprint set (3 each for G.2C and G.6A, 2 for every other blueprint SE) plus 1 question each on G.2A (midpoint of a segment) and G.6B (proving triangles congruent). The 15-question set leaves out G.2A and G.6B.</li>
       <li>Students choose whether to see answers <b>after each question</b> or <b>at the end</b>. At the end works like the real ACP: they can skip, flag, and change answers, and nothing is graded until they finish. Your Sheet shows “answers at end” in the Difficulty column.</li>
       <li><b>Targeted practice</b>: students pick topics and 10 or 20 questions. Everyone starts at Medium. Two right in a row without a hint moves them up a level, and a miss moves them down one. Finished sets go to your Sheet too, with “Targeted practice” and the level they ended at in the Difficulty column.</li>
       <li><b>My progress</b> lists every result saved in the student’s browser (up to 30) and their totals on each TEKS.</li>
-      <li>Students choose 28 or 15 questions. The 28-question set uses the blueprint’s exact counts: 3 each for G.2C and G.6A, 2 for every other SE. The 15-question set keeps the same ratio with one fewer from every SE: 2 each for G.2C and G.6A, 1 for every other SE. Topic codes in the side index are the SEs (2B is G.2B).</li>
+      <li>The 28 blueprint SEs use the blueprint’s exact counts: 3 each for G.2C and G.6A, 2 for every other SE. The 15-question set keeps the same ratio with one fewer from every SE: 2 each for G.2C and G.6A, 1 for every other SE. Topic codes in the side index are the SEs (2B is G.2B).</li>
       <li>When an SE gets more than one question, each comes from a different property the SE names (a parallel line and a perpendicular line for G.2C, a forward and a backward area problem for G.11A), so a right answer shows the idea, not one memorized problem type. In G.5A, one question is almost always polygon interior and exterior angles. The full list is under <b>What each SE tests</b> below.</li>
       <li>Students pick Medium, Hard, or Extra hard before they start. <b>Medium</b> is built to the level of the SchoolCity example items (2627000337): mostly multiple choice, 4 to 6 typed answers, and 1 or 2 of the three hardest example types (two-polygon chain, ex. 21; five-step parallel line chain, ex. 13; isosceles-parallel triangle, ex. 15). <b>Hard</b> uses the multi-step version of each SE, 6 to 9 typed answers, select-all and drop-down items, and at least 2 of the hardest types. <b>Extra hard</b> uses the hardest variant of every SE, all 3 hardest types, and turns most numeric multiple choice into typed entry.</li>
       <li>Students can skip questions and jump to any number in the grid, in any order. Each answer can be checked only once: checking shows right or wrong, why, and the worked steps, and then that question locks. They can finish early; answered but unchecked questions are graded as they are, and blank ones count as missed.</li>
@@ -3812,14 +3812,14 @@ function practice(t) {
 }
 function tekPage(code) {
   const t = TEK[code], tab = S.tab[code] || 'learn';
-  return `<header class="mod-head"><p class="eyebrow"><span class="tabn c-${t.strand}">${t.code}</span>${t.extra ? 'Extra topic: 2 of 32 questions on the long mixed review' : t.items + ' of 28 questions on the ACP'}</p><h1>${t.title}</h1><p class="why">${Rp(t.why)}</p>
+  return `<header class="mod-head"><p class="eyebrow"><span class="tabn c-${t.strand}">${t.code}</span>${t.extra ? 'Extra topic: 1 of 30 questions on the mixed review (not on the 28-question ACP blueprint)' : t.items + ' of 28 questions on the ACP'}</p><h1>${t.title}</h1><p class="why">${Rp(t.why)}</p>
     <div class="seg" role="tablist"><button role="tab" class="seg-learn" data-act="tab" data-tab="learn" aria-selected="${tab === 'learn'}"><span class="seg-n">01</span>Learn</button><button role="tab" class="seg-prac" data-act="tab" data-tab="practice" aria-selected="${tab === 'practice'}"><span class="seg-n">02</span>Practice ${squares(t.skills)}</button><button class="fcin" data-act="fc" aria-expanded="${S.fc}">Formula chart</button></div></header>
     <div class="mod-body${tab === 'learn' ? ' has-float' : ''}">${tab === 'learn' ? learn(t) : practice(t)}</div>
     ${tab === 'learn' ? `<button class="float-prac" data-act="tab" data-tab="practice">Go to Practice <span aria-hidden="true">→</span></button>` : ''}`;
 }
 /* ---------- mixed review: building a set ---------- */
 const HARD = ['5a_polychain', '6a_chain', '6d_hard'];
-const LENS = [32, 28, 15];
+const LENS = [30, 15];
 function wpick(arr, wt) { const tot = arr.reduce((s, x) => s + wt(x), 0); let r = Math.random() * tot; for (const x of arr) { r -= wt(x); if (r <= 0) return x; } return arr[arr.length - 1]; }
 /* n questions for one TEK. Each comes from a different property of the TEK (G.FACETS) until every property has one,
    so two questions on a TEK never test the same idea. The mode leans on which property comes up only lightly (square root),
@@ -3838,9 +3838,9 @@ function pickTek(t, n, fac, mode) {
 }
 /* mode 1 medium (ACP example-item level), 2 hard, 3 extra hard.
    len 28: the blueprint counts (3 each for G.2C and G.6A, 2 for the rest). len 15: one fewer from every TEK. */
-const countFor = (t, len) => t.extra ? (len === 32 ? t.items : 0) : len === 15 ? t.items - 1 : t.items;
+const countFor = (t, len) => t.extra ? (len === 30 ? t.items : 0) : len === 15 ? t.items - 1 : t.items;
 function buildTest(mode, len) {
-  mode = mode || 1; len = [32, 15].includes(len) ? len : 28;
+  mode = mode || 1; len = len === 15 ? 15 : 30;
   const M0 = G.MODES[mode], M = len === 15 ? Object.assign({}, M0, M0.short) : M0;
   const draw = () => TEKS.flatMap(t => pickTek(t, countFor(t, len), M.fac, mode));
   let best = null;
@@ -3861,7 +3861,7 @@ function buildTest(mode, len) {
 const newId = () => Date.now().toString(36).toUpperCase().slice(-6) + Math.random().toString(36).slice(2, 5).toUpperCase();
 const modeName = m => (G.MODES[m || 1] || G.MODES[1]).name;
 function startTest(name, period, mode, len, exam) {
-  mode = +mode || 1; len = [32, 15].includes(+len) ? +len : 28;
+  mode = +mode || 1; len = +len === 15 ? 15 : 30;
   const T = { id: newId(), name, period, mode, len, exam: !!exam, start: Date.now(), items: buildTest(mode, len), i: 0, flags: [], qt: [], enter: Date.now() };
   T.ans = T.items.map(() => null); T.done = T.items.map(() => false); T.ok = T.items.map(() => false); T.st = T.items.map(() => false); T.qt = T.items.map(() => 0);
   saved.test = T; saved.who = { name, period, mode, len, exam: !!exam }; save();
@@ -3937,7 +3937,7 @@ function report(R) {
       const tag = k === 0 ? 'Study first' : k === 1 ? 'Study next' : 'Then';
       const marks = g.qs.map(q => `<i class="${q.ok ? 'ok' : 'no'}" title="Question ${q.i + 1}: ${q.ok ? 'right' : 'missed'}"></i>`).join('');
       h += `<li class="r${Math.min(k + 1, 3)}"><div class="need-top"><span class="need-rank">${k + 1}</span><div><p class="need-tag">${tag}</p>
-        <h3><span class="tabn c-${g.t.strand}">${g.t.code}</span>${g.t.title}</h3><p class="need-stat">Missed ${g.miss} of ${g.qs.length} · ${g.t.extra ? 'an extra topic on the 32-question review' : `worth ${g.t.items} of the 28 ACP questions`}</p></div>
+        <h3><span class="tabn c-${g.t.strand}">${g.t.code}</span>${g.t.title}</h3><p class="need-stat">Missed ${g.miss} of ${g.qs.length} · ${g.t.extra ? '1 of the 30 mixed review questions (extra topic)' : `worth ${g.t.items} of the 28 ACP questions`}</p></div>
         <span class="qm" role="img" aria-label="${g.qs.length - g.miss} right, ${g.miss} missed">${marks}</span></div>
         <div class="chips"><button class="btn ghost sm" data-act="learn" data-code="${g.t.code}">Review the lesson</button>${g.skills.map(sid => `<button class="chip" data-act="drill" data-skill="${sid}">Practice: ${skName(sid)}</button>`).join('')}</div></li>`;
     });
@@ -3964,7 +3964,7 @@ function signIn() {
     <div class="namerow"><div class="field"><label for="st-first">First 3 letters of your first name</label><input id="st-first" name="first3" type="text" maxlength="3" value="${esc((w.name || '').split(' ')[0] || '')}" placeholder="e.g. Mar" autocomplete="off" autocapitalize="words" spellcheck="false"></div>
     <div class="field"><label for="st-last">First 3 letters of your last name</label><input id="st-last" name="last3" type="text" maxlength="3" value="${esc((w.name || '').split(' ')[1] || '')}" placeholder="e.g. Gar" autocomplete="off" autocapitalize="words" spellcheck="false"></div></div>
     <div class="field"><label for="st-per">Class period</label><select id="st-per" name="period"><option value="">Choose your period</option>${PERIODS.map(p => `<option${w.period === p ? ' selected' : ''}>${p}</option>`).join('')}</select></div>
-    <fieldset class="modes"><legend>Length</legend><div class="mode-row">${LENS.map(n => `<label class="mode"><input type="radio" name="len" value="${n}"${(+w.len || 28) === n ? ' checked' : ''}><span>${n} questions</span></label>`).join('')}</div><p class="fine">32 adds two extra topics: 2A midpoints and 6B congruence proofs.</p></fieldset>
+    <fieldset class="modes"><legend>Length</legend><div class="mode-row">${LENS.map(n => `<label class="mode"><input type="radio" name="len" value="${n}"${(+w.len === 15 ? 15 : 30) === n ? ' checked' : ''}><span>${n} questions</span></label>`).join('')}</div><p class="fine">30 questions: the 28 on the ACP blueprint, plus 1 on 2A midpoints and 1 on 6B congruence proofs.</p></fieldset>
     <fieldset class="modes"><legend>When do you want to see the answers?</legend><div class="mode-row">${[[0, 'After each question'], [1, 'At the end, like the ACP']].map(([v, l]) => `<label class="mode"><input type="radio" name="when" value="${v}"${(w.exam ? 1 : 0) === v ? ' checked' : ''}><span>${l}</span></label>`).join('')}</div></fieldset>
     <fieldset class="modes"><legend>Difficulty</legend><div class="mode-row">${[1, 2, 3].map(m => `<label class="mode"><input type="radio" name="mode" value="${m}"${(+w.mode || 1) === m ? ' checked' : ''}><span>${G.MODES[m].name}</span></label>`).join('')}</div></fieldset>
     ${S.signErr ? `<p class="err" role="alert">${S.signErr}</p>` : ''}
@@ -3978,7 +3978,7 @@ function examPage() {
   const nAns = T.items.filter((q, i) => answered(q, T.ans[i])).length, blank = n - nAns, nFlag = T.items.filter((q, i) => T.flags[i]).length;
   let h = `<header class="mod-head"><p class="eyebrow">Mixed review · answers at the end</p>
     <div class="tstat"><span class="who">${esc(T.name)} · ${esc(T.period)}</span><span class="mode-tag m${T.mode || 1}">${modeName(T.mode)}</span><span class="timer" id="timer" aria-label="Time so far">${S.hideTimer ? 'Timer hidden' : fmtTime((Date.now() - T.start) / 1000)}</span><button class="linkbtn" data-act="timer">${S.hideTimer ? 'Show timer' : 'Hide timer'}</button><span class="runscore">${nAns} of ${n} answered</span><button class="btn ghost sm fcin" data-act="fc" aria-expanded="${S.fc}">Formula chart</button></div>
-    <nav class="navgrid" aria-label="Questions. Tap a number to jump to it." style="--cols:${n === 15 ? 15 : n === 32 ? 16 : 14};--colsm:${n === 15 || n === 32 ? 8 : 10}">${T.items.map((q, i) => { const has = answered(q, T.ans[i]); const cls = (i === T.i ? ' cur' : '') + (has ? ' ans' : '') + (T.flags[i] ? ' fl' : ''); return `<button class="nv${cls}" data-act="goto" data-i="${i}" aria-label="Question ${i + 1}${has ? ', answered' : ', not answered'}${T.flags[i] ? ', flagged' : ''}"${i === T.i ? ' aria-current="step"' : ''}>${i + 1}</button>`; }).join('')}</nav>
+    <nav class="navgrid" aria-label="Questions. Tap a number to jump to it." style="--cols:15;--colsm:${n === 15 ? 8 : 10}">${T.items.map((q, i) => { const has = answered(q, T.ans[i]); const cls = (i === T.i ? ' cur' : '') + (has ? ' ans' : '') + (T.flags[i] ? ' fl' : ''); return `<button class="nv${cls}" data-act="goto" data-i="${i}" aria-label="Question ${i + 1}${has ? ', answered' : ', not answered'}${T.flags[i] ? ', flagged' : ''}"${i === T.i ? ' aria-current="step"' : ''}>${i + 1}</button>`; }).join('')}</nav>
     <p class="navkey fine"><span class="k ans"></span>answered <span class="k"></span>not answered <span class="k fl"></span>flagged</p></header>`;
   h += `<article class="card prob" id="card"><div class="card-top"><p class="eyebrow">Question ${T.i + 1} of ${n}</p><span class="fmt">${FMT[p.type]}</span></div>${itemHTML(p, { a: T.ans[T.i], done: false }, 'test')}`;
   h += `<p class="once fine">Like the real ACP, you see what you got right after you finish. You can change any answer until then.</p>`;
@@ -3997,7 +3997,7 @@ function testPage() {
   const nDone = T.done.filter(Boolean).length, nOk = T.done.filter((d, i) => d && T.ok[i]).length;
   let h = `<header class="mod-head"><p class="eyebrow">Mixed review</p>
     <div class="tstat"><span class="who">${esc(T.name)} · ${esc(T.period)}</span><span class="mode-tag m${T.mode || 1}">${modeName(T.mode)}</span><span class="timer" id="timer" aria-label="Time so far">${S.hideTimer ? 'Timer hidden' : fmtTime((Date.now() - T.start) / 1000)}</span><button class="linkbtn" data-act="timer">${S.hideTimer ? 'Show timer' : 'Hide timer'}</button><span class="runscore">${nOk} of ${nDone} right</span><button class="btn ghost sm fcin" data-act="fc" aria-expanded="${S.fc}">Formula chart</button></div>
-    <nav class="navgrid" aria-label="Questions. Tap a number to jump to it." style="--cols:${n === 15 ? 15 : n === 32 ? 16 : 14};--colsm:${n === 15 || n === 32 ? 8 : 10}">${T.items.map((q, i) => { const has = !T.done[i] && answered(q, T.ans[i]); const cls = (i === T.i ? ' cur' : '') + (T.done[i] ? (T.ok[i] ? ' ok' : ' no') : has ? ' ans' : ''); return `<button class="nv${cls}" data-act="goto" data-i="${i}" aria-label="Question ${i + 1}${T.done[i] ? (T.ok[i] ? ', right' : ', missed') : has ? ', answered, not checked' : ', not answered'}"${i === T.i ? ' aria-current="step"' : ''}>${i + 1}</button>`; }).join('')}</nav>
+    <nav class="navgrid" aria-label="Questions. Tap a number to jump to it." style="--cols:15;--colsm:${n === 15 ? 8 : 10}">${T.items.map((q, i) => { const has = !T.done[i] && answered(q, T.ans[i]); const cls = (i === T.i ? ' cur' : '') + (T.done[i] ? (T.ok[i] ? ' ok' : ' no') : has ? ' ans' : ''); return `<button class="nv${cls}" data-act="goto" data-i="${i}" aria-label="Question ${i + 1}${T.done[i] ? (T.ok[i] ? ', right' : ', missed') : has ? ', answered, not checked' : ', not answered'}"${i === T.i ? ' aria-current="step"' : ''}>${i + 1}</button>`; }).join('')}</nav>
     <p class="navkey fine"><span class="k ok"></span>right <span class="k no"></span>missed <span class="k ans"></span>answered, not checked <span class="k"></span>not answered</p></header>`;
   h += `<article class="card prob" id="card"><div class="card-top"><p class="eyebrow">Question ${T.i + 1} of ${n}</p><span class="fmt">${FMT[p.type]}</span></div>${itemHTML(p, { a: T.ans[T.i], done }, done ? 'review' : 'test')}`;
   if (!done) {
@@ -4331,7 +4331,7 @@ function doSignIn() {
   const f3 = document.getElementById('st-first').value.replace(/\s+/g, ''), l3 = document.getElementById('st-last').value.replace(/\s+/g, '');
   const three = v => [...v].length === 3 && /^\p{L}+_*$/u.test(v); // short names pad with _ (Al_)
   const name = cap(f3) + ' ' + cap(l3), period = document.getElementById('st-per').value;
-  const mode = +((document.querySelector('input[name="mode"]:checked') || {}).value || 1), len = +((document.querySelector('input[name="len"]:checked') || {}).value || 28);
+  const mode = +((document.querySelector('input[name="mode"]:checked') || {}).value || 1), len = +((document.querySelector('input[name="len"]:checked') || {}).value || 30);
   const exam = +((document.querySelector('input[name="when"]:checked') || {}).value || 0) === 1;
   saved.who = { name, period, mode, len, exam };
   if (!three(f3)) { S.signErr = 'Type exactly 3 letters from the start of your first name (example: Maria → Mar). For a short name, fill with _ (Al → Al_).'; render(); document.getElementById('st-first').focus(); return; }

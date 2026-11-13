@@ -1686,7 +1686,7 @@ const TEKS = [
       { t: 'Parabolas move the same way', rule: '`g(x) = a(x - c)^2 + d` is `f(x) = x^2` moved the same way: the vertex goes to `(c, d)`, and a stretches, compresses, or flips it. One unit right of the vertex, the graph goes up a.', ex: ['6c_parabola', 3], watch: '`(x + 4)^2` moves the parabola LEFT 4, just like `|x + 4|`.' },
       { t: 'Graph it', rule: 'The new vertex is `(c, d)`. From the vertex, the slope of each side is a and −a.', ex: ['6c_graph', 2], watch: 'Check the direction it opens and the vertex. Wrong choices usually get one of them backward.' }
     ], tip: 'Type `f(x)` and `g(x)` into the calculator to see the change.' },
-  { id: '2A.7I', code: '7I', items: 2, strand: 'fig', short: 'Domain and range', title: 'Domain and Range: Interval and Inequality Notation',
+  { id: '2A.7I', code: '7I', items: 2, strand: 'fig', short: 'Domain and Range', title: 'Domain and Range: Interval and Inequality Notation',
     teks: 'Write the domain and range of a function in interval notation and inequalities. (Set notation is crossed out on this ACP.)',
     why: 'Domain is the x-values, read left to right. Range is the y-values, read bottom to top. Write them with brackets or with inequality signs.',
     moves: [
@@ -1696,7 +1696,7 @@ const TEKS = [
       { t: 'From an equation', rule: 'No graph? Sketch one. Find the vertex `(h, k)` and which way it opens. Absolute value graphs and parabolas use every x, and y starts at k. A cubic uses every x and every y.', ex: ['7i_equation', 3], watch: 'The range starts at k, the y-value of the vertex, not at h.' },
       { t: 'Switch between them', rule: 'Read each end on its own: the number, and whether it is included.', ex: ['7i_convert', 4], watch: 'Infinity is never included, so it never gets a bracket.' }
     ], tip: 'Trace the graph from left to right with your finger for the domain, then bottom to top for the range.' },
-  { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
+  { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent Functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
     teks: 'Graph the functions f(x) = x³ and f(x) = |x|, and, when applicable, analyze the key attributes such as domain, range, intercepts, symmetries, and maximum and minimum given an interval.',
     why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its vertex, intercepts, symmetry, and its maximum or minimum on an interval. (Domain and range are practiced in 7I.)',
     moves: [
@@ -1704,7 +1704,7 @@ const TEKS = [
       { t: 'Roots of a cubic', rule: 'Each root r gives a factor `(x - r)`. A root at 0 gives the factor x. Multiply the factors to get the function.', ex: ['2a_cubic_roots', 2], watch: 'A root at `x = 3` gives `(x - 3)`, not `(x + 3)`.' },
       { t: 'Max and min on an interval', rule: 'Find the y-value at both ends of the interval. For an absolute value graph, also check the vertex if it is inside the interval. The biggest is the maximum and the smallest is the minimum.', ex: ['2a_extrema', 4], watch: 'A cubic like `y = x^3` has no turning point, so on an interval its max and min are at the endpoints.' }
     ], tip: 'Put the function in the graphing calculator and look at the table. It checks intercepts and maximum or minimum values in seconds.' },
-  { id: '2A.3A', code: '3A', items: 2, strand: 'coord', short: 'Write systems', title: 'Write a System of Equations',
+  { id: '2A.3A', code: '3A', items: 2, strand: 'coord', short: 'Write Systems', title: 'Write a System of Equations',
     teks: 'Formulate systems of equations, including systems consisting of three linear equations in three variables and systems consisting of two equations, the first linear and the second quadratic.',
     why: 'Turn words or a graph into equations. Word problems become three linear equations. A graph of a line and a parabola becomes one linear and one quadratic equation.',
     moves: [
@@ -1712,7 +1712,7 @@ const TEKS = [
       { t: 'Keep the units the same', rule: 'If prices are in dollars, the total must be in dollars too. A nickel is 0.05 dollars or 5 cents. Pick one unit and use it everywhere.', ex: ['3a_three_var', 11], watch: 'A choice that mixes cents and dollars is always there.' },
       { t: 'A line and a parabola', rule: 'For the line, read the y-intercept and count rise over run. For the parabola, read the vertex `(h, k)` and step one unit to find a. Then write `y = a(x - h)^2 + k`.', ex: ['3a_linquad', 3], watch: 'Slope is rise over run. Run over rise gives the upside-down slope, and it is a choice.' }
     ], tip: 'Check your system: the solution the problem describes should make every equation true.' },
-  { id: '2A.3B', code: '3B', items: 2, strand: 'coord', short: 'Solve 3×3 systems', title: 'Solve Systems of Three Equations',
+  { id: '2A.3B', code: '3B', items: 2, strand: 'coord', short: 'Solve 3×3 Systems', title: 'Solve Systems of Three Equations',
     teks: 'Solve systems of three linear equations in three variables by using Gaussian elimination, technology with matrices, and substitution.',
     why: 'Three equations, three unknowns. Use matrices on the graphing calculator, or eliminate one variable at a time.',
     moves: [
@@ -1720,7 +1720,7 @@ const TEKS = [
       { t: 'Set up the matrix equation', rule: 'First move every variable to the left and every number to the right. Then the coefficients make matrix A, and the constants make matrix B.', ex: ['3b_matrix', 3], watch: 'When a term moves across the equals sign its sign changes. That is the most common wrong choice.' },
       { t: 'Word problems', rule: 'Name a variable for each unknown, write one equation for each fact, then solve with a matrix.', ex: ['3b_context', 2], watch: 'Answer the question that was asked. The other two values are always wrong choices.' }
     ], tip: 'You can always check a choice by substituting it into all three equations.' },
-  { id: '2A.3F', code: '3F', items: 2, strand: 'coord', short: 'Inequality systems', title: 'Systems of Linear Inequalities',
+  { id: '2A.3F', code: '3F', items: 2, strand: 'coord', short: 'Inequality Systems', title: 'Systems of Linear Inequalities',
     teks: 'Solve systems of two or more linear inequalities in two variables.',
     why: 'Graph each inequality, then find where the shadings overlap. Every point in that overlap is a solution.',
     moves: [
@@ -1728,7 +1728,7 @@ const TEKS = [
       { t: 'Shade above or below', rule: 'When the inequality is solved for y, `y >` or `y ≥` shades above the line and `y <` or `y ≤` shades below.', ex: ['3f_sys_to_graph', 3], watch: 'If you are not sure, test `(0, 0)` in the inequality. If it is true, shade the side with the origin.' },
       { t: 'Test a point', rule: 'A solution has to make every inequality true. Substitute the point into each one.', ex: ['3f_point', 6], watch: 'A point on a dashed line is not a solution.' }
     ], tip: 'Graph both inequalities on the calculator to see the overlap.' },
-  { id: '2A.6D', code: '6D', items: 2, strand: 'proof', short: 'Write |x| equations', title: 'Write Absolute Value Equations',
+  { id: '2A.6D', code: '6D', items: 2, strand: 'proof', short: 'Write |x| Equations', title: 'Write Absolute Value Equations',
     teks: 'Formulate absolute value linear equations.',
     why: 'Absolute value measures distance. `|x - c| = d` means x is d units away from c.',
     moves: [
@@ -1736,7 +1736,7 @@ const TEKS = [
       { t: 'From a graph', rule: 'Read the vertex `(h, k)` and the slope a of one side. Write `f(x) = a|x - h| + k`.', ex: ['6d_graph', 5], watch: 'The graph opens down when a is negative.' },
       { t: 'From two solutions', rule: 'The center is the average of the two solutions. The distance is how far each one is from the center.', ex: ['6d_solutions', 2], watch: 'The distance is half the gap between the solutions, not the whole gap.' }
     ], tip: 'Check: solve your equation and make sure you get the values from the problem.' },
-  { id: '2A.6E', code: '6E', items: 2, strand: 'proof', short: 'Solve |x| equations', title: 'Solve Absolute Value Equations',
+  { id: '2A.6E', code: '6E', items: 2, strand: 'proof', short: 'Solve |x| Equations', title: 'Solve Absolute Value Equations',
     teks: 'Solve absolute value linear equations.',
     why: 'Get the absolute value alone, then split into two equations. Always check your answers, because one can be extraneous.',
     moves: [
@@ -1744,7 +1744,7 @@ const TEKS = [
       { t: 'Check for extraneous solutions', rule: 'When x is on both sides, substitute each answer back in. An absolute value can never equal a negative number.', ex: ['6e_one', 4], watch: 'The extraneous answer is always one of the choices.' },
       { t: 'Set up the cases', rule: 'If a number multiplies the absolute value, undo it first. Then the second case negates the whole other side.', ex: ['6e_setup', 2], watch: 'Multiply EVERY term on the other side, not just the first one.' }
     ], tip: 'Graph both sides as two functions on the calculator. The solutions are where they meet.' },
-  { id: '2A.6F', code: '6F', items: 2, strand: 'proof', short: '|x| inequalities', title: 'Solve Absolute Value Inequalities',
+  { id: '2A.6F', code: '6F', items: 2, strand: 'proof', short: '|x| Inequalities', title: 'Solve Absolute Value Inequalities',
     teks: 'Solve absolute value linear inequalities.',
     why: 'Less than means close to the center: one interval, an AND. Greater than means far from the center: two rays, an OR.',
     moves: [
@@ -1752,7 +1752,7 @@ const TEKS = [
       { t: 'Greater than: OR', rule: '`|x - 2| > 5` becomes `x - 2 < -5` or `x - 2 > 5`. The solution is two rays going outward.', ex: ['6f_solve', 8], watch: 'Isolate the absolute value first, just like with equations.' },
       { t: 'On a number line', rule: 'Use an open circle for `<` or `>` and a closed circle for `≤` or `≥`. Shade between for AND, outward for OR.', ex: ['6f_numberline', 2], watch: 'Check the dots and the shape separately. Wrong choices change one of them.' }
     ], tip: 'Test a number from your answer in the original inequality.' },
-  { id: '2A.7A', code: '7A', items: 2, strand: 'logic', short: 'Complex numbers', title: 'Add, Subtract, and Multiply Complex Numbers',
+  { id: '2A.7A', code: '7A', items: 2, strand: 'logic', short: 'Complex Numbers', title: 'Add, Subtract, and Multiply Complex Numbers',
     teks: 'Add, subtract, and multiply complex numbers.',
     why: 'Treat i like a variable, then replace `i^2` with `-1` at the end.',
     moves: [
@@ -1760,7 +1760,7 @@ const TEKS = [
       { t: 'Multiply with FOIL', rule: 'Multiply all four pairs. The last product has `i^2`, which is `-1`, so it moves to the real part with its sign flipped.', ex: ['7a_mult', 4], watch: '`(3i)(4i) = 12i^2 = -12`. Forgetting the minus is the most common wrong choice.' },
       { t: 'Radicals', rule: '`(i√{3})^2 = i^2 · 3 = -3`. Square the i and the root separately.', ex: ['7a_radical', 2], watch: 'Keep `√{3}` with the i terms. Only the squared term loses it.' }
     ], tip: 'Your graphing calculator can do complex numbers. Use the i key.' },
-  { id: '2A.4B', code: '4B', items: 2, strand: 'logic', short: 'Parabola equations', title: 'Write the Equation of a Parabola',
+  { id: '2A.4B', code: '4B', items: 2, strand: 'logic', short: 'Parabola Equations', title: 'Write the Equation of a Parabola',
     teks: 'Write the equation of a parabola using given attributes, including vertex, x-intercept, y-intercept, and axis of symmetry.',
     why: 'Use the vertex form `y = a(x - h)^2 + k`. The vertex gives h and k. Any other point gives a.',
     moves: [
@@ -1769,7 +1769,7 @@ const TEKS = [
       { t: 'From roots and the vertex', rule: 'The vertex is halfway between the roots. Put the vertex in vertex form, then substitute a root, where y is 0, to find a.', ex: ['4b_roots', 3], watch: 'If the vertex is above the x-axis and there are roots, the parabola opens down.' },
       { t: 'Models', rule: 'For a ball or a bridge, the highest point is the vertex. Substitute the starting point, often `(0, 0)`, to find a.', ex: ['4b_context', 4], watch: 'A path that goes up and comes back down opens down, so a is negative.' }
     ], tip: 'Check your equation by putting in a point from the graph.' },
-  { id: '2A.4D', code: '4D', items: 2, strand: 'logic', short: 'Vertex form', title: 'Standard Form to Vertex Form',
+  { id: '2A.4D', code: '4D', items: 2, strand: 'logic', short: 'Vertex Form', title: 'Standard Form to Vertex Form',
     teks: 'Transform a quadratic function f(x) = ax² + bx + c to the form f(x) = a(x − h)² + k to identify the different attributes of f(x).',
     why: 'Complete the square, or use the shortcut: `h = {-b/2a}` and `k = f(h)`. The value of a stays the same.',
     moves: [
@@ -1778,7 +1778,7 @@ const TEKS = [
       { t: 'Find the mistake', rule: 'Redo each step yourself. Check the factoring, then the number added and subtracted, then the sign inside the square.', ex: ['4d_error', 2], watch: 'The ACP asks for the FIRST step with a mistake. Later steps may look wrong only because of it.' },
       { t: 'Read the attributes', rule: 'From vertex form: the vertex is `(h, k)`, the axis of symmetry is `x = h`, and k is the minimum (a > 0) or maximum (a < 0) value.', ex: ['4d_attr', 4], watch: 'The constant c is the y-intercept, not the vertex height.' }
     ], tip: 'Graph the original function on the calculator and find the minimum or maximum to check your vertex.' },
-  { id: '2A.4F', code: '4F', items: 2, strand: 'logic', short: 'Quadratic equations', title: 'Solve Quadratic Equations',
+  { id: '2A.4F', code: '4F', items: 2, strand: 'logic', short: 'Quadratic Equations', title: 'Solve Quadratic Equations',
     teks: 'Solve quadratic equations having real solutions.',
     why: 'Get zero on one side. Then factor, complete the square, or use the quadratic formula. Most have two solutions.',
     moves: [
@@ -1786,7 +1786,7 @@ const TEKS = [
       { t: 'The quadratic formula', rule: '`x = {-b ± √{b^2 - 4ac}/2a}`. Simplify the square root at the end, like `√{12} = 2√{3}`.', ex: ['4f_qf', 5], watch: 'Divide the WHOLE top by 2a, not just the −b.' },
       { t: 'Word problems', rule: 'Write the equation, solve it, and then throw out any answer that does not make sense, like a negative width.', ex: ['4f_entry', 7], watch: 'Both solutions come out of the math. Only one may fit the situation.' }
     ], tip: 'Graph the equation as `y = …` on the calculator. The x-intercepts are the solutions.' },
-  { id: '2A.4H', code: '4H', items: 2, strand: 'logic', short: 'Quadratic inequalities', title: 'Solve Quadratic Inequalities',
+  { id: '2A.4H', code: '4H', items: 2, strand: 'logic', short: 'Quadratic Inequalities', title: 'Solve Quadratic Inequalities',
     teks: 'Solve quadratic inequalities.',
     why: 'Find the roots, then decide whether the solutions are between them or outside them.',
     moves: [
