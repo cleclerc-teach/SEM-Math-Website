@@ -999,7 +999,7 @@ S['2a_abs_attr'] = { se: '2A.2A', name: 'Key attributes of an absolute value fun
     { t: `The y-intercept is ${BP(0, k)}.`, why: `${M('y = ' + k)} is the vertex height. The y-intercept is f(0) = ${ns(yint)}.` }
   ];
   const fig = G.rnd() < 0.5 ? grid({ curves: [{ f: x => cval(a) * Math.abs(x - h) + k }], aria: 'Graph of ' + fx }) : '';
-  const steps = [[`Read the vertex from ${M('a|x - h| + k')}: h = ${h}, k = ${k}.`, `vertex ${P(h, k)}`], [`a = ${cstr(a)} is ${up ? 'positive, so the graph opens up and the vertex is a minimum' : 'negative, so the graph opens down and the vertex is a maximum'}.`, `range: ${range}`], ['Every x works in an absolute value, so the domain is all real numbers. The axis of symmetry is the vertical line through the vertex.', `x = ${h}`]];
+  const steps = [[`Read the vertex from ${M('a|x - h| + k')}: h = ${h}, k = ${k}.`, `vertex ${P(h, k)}`], [`a = ${cstr(a)} is ${up ? 'positive, so the graph opens up and the vertex is a minimum' : 'negative, so the graph opens down and the vertex is a maximum'}.`, `range: ${range}`, grid({ curves: [{ f: x => cval(a) * Math.abs(x - h) + k }], pts: [{ x: h, y: k, label: P(h, k) }], aria: 'Graph of ' + fx })], ['Every x works in an absolute value, so the domain is all real numbers. The axis of symmetry is the vertical line through the vertex.', `x = ${h}`]];
   if (G.LV >= 2) {
     const tr = sample(T, 2), fl = sample(F, 3);
     return { type: 'multi', lead: fig ? `The graph of ${M(fx)} is shown.` : '', fig, q: (fig ? '' : `Given the function ${M(fx)}, which`) + (fig ? 'Which' : '') + ' statements represent key attributes of this function? Select TWO correct answers.', choices: shuffle(tr.concat(fl.map(x => Object.assign({ ok: false }, x)))), hint: 'Find the vertex and the direction it opens first.', steps };
@@ -1016,7 +1016,7 @@ S['2a_abs_dr'] = { se: '2A.2A', name: 'Domain and range of |x| and x³ functions
       { t: `Domain: ${M(all)}<br>Range: ${M(iv(k, INF, true, false))}`, why: 'A cubic keeps going up on one side and down on the other. Its range is all real numbers, not a ray.' },
       { t: `Domain: ${M(iv(h, INF, true, false))}<br>Range: ${M(all)}`, why: 'Any x can be cubed. The domain is all real numbers.' },
       { t: `Domain: ${M(iv(h, INF, true, false))}<br>Range: ${M(iv(k, INF, true, false))}`, why: '(h, k) is the point of symmetry of a cubic, not an endpoint.' }]);
-    return { type: 'mc', q: `What are the domain and range of the function ${M(fx)}?`, choices, hint: 'Picture the parent graph y = x³. Do shifts and stretches ever stop it from reaching every x or every y?', steps: [['The parent function y = x³ uses every x and reaches every y.', null], ['Shifting, stretching, and reflecting do not change that.', `Domain: ${all}, Range: ${all}`]] };
+    return { type: 'mc', q: `What are the domain and range of the function ${M(fx)}?`, choices, hint: 'Picture the parent graph y = x³. Do shifts and stretches ever stop it from reaching every x or every y?', steps: [['The parent function y = x³ uses every x and reaches every y.', null], ['Shifting, stretching, and reflecting do not change that. The graph keeps going left, right, up, and down.', `Domain: ${all}, Range: ${all}`, grid({ curves: [{ f: x => a * (x - h) ** 3 + k }], pts: [{ x: h, y: k, label: P(h, k) }], aria: 'Graph of ' + fx })]] };
   }
   const up = a > 0, fx = aform(a, h, k), all = iv(NINF, INF, false, false), R = up ? iv(k, INF, true, false) : iv(NINF, k, false, true);
   const choices = mc({ t: `Domain: ${M(all)}<br>Range: ${M(R)}` }, [
@@ -1024,7 +1024,7 @@ S['2a_abs_dr'] = { se: '2A.2A', name: 'Domain and range of |x| and x³ functions
     { t: `Domain: ${M(up ? iv(h, INF, true, false) : iv(NINF, h, false, true))}<br>Range: ${M(all)}`, why: 'You swapped the roles. Domain is every x (all real numbers); the range depends on the vertex height k.' },
     { t: `Domain: ${M(all)}<br>Range: ${M(up ? iv(-k, INF, true, false) : iv(NINF, -k, false, true))}`, why: `The vertex height is k = ${k}, read with its own sign.` },
     { t: `Domain: ${M(all)}<br>Range: ${M(up ? iv(k, INF, false, false) : iv(NINF, k, false, false))}`, why: `The vertex is on the graph, so y = ${k} is included. Use a bracket.` }]);
-  return { type: 'mc', q: `What are the domain and range of the function ${M(fx)}?`, choices, hint: 'Find the vertex (h, k). Which way does the graph open?', steps: [[`Vertex: ${BP(h, k)}. a = ${a}, so the graph opens ${up ? 'up' : 'down'}.`, null], ['Every x works, and y starts at the vertex height.', `Domain: ${all}, Range: ${R}`]] };
+  return { type: 'mc', q: `What are the domain and range of the function ${M(fx)}?`, choices, hint: 'Find the vertex (h, k). Which way does the graph open?', steps: [[`Vertex: ${BP(h, k)}. a = ${a}, so the graph opens ${up ? 'up' : 'down'}.`, null], ['Every x works, and y starts at the vertex height.', `Domain: ${all}, Range: ${R}`, grid({ curves: [{ f: x => a * Math.abs(x - h) + k }], pts: [{ x: h, y: k, label: P(h, k) }], aria: 'Graph of ' + fx })]] };
 } };
 
 S['2a_cubic_roots'] = { se: '2A.2A', name: 'Cubic functions: roots and intercepts', w: 2, gen() {
@@ -1480,13 +1480,13 @@ S['7i_interval'] = { se: '2A.7I', name: 'Domain and range in interval notation',
   if (sh.D[0] !== NINF || sh.D[1] !== INF || sh.R[0] !== NINF) ds.push({ t: T(flipB(sh.D), flipB(sh.R)), why: 'A closed (filled) dot is included: use a bracket [ ]. An open dot is not: use a parenthesis ( ).' });
   ds.push({ t: T(sh.D, flipB(sh.R)), why: 'Check the brackets on the range.' }, { t: T(flipB(sh.D), sh.R), why: 'Check the brackets on the domain.' }, { t: T(sh.R, sh.R), why: 'The domain is read from the x-axis.' });
   return { type: 'mc', lead: 'The graph of a function is shown.', fig, q: 'What are the domain and range of this function?', choices: mc({ t: T(sh.D, sh.R) }, ds),
-    hint: 'Domain: from the leftmost x to the rightmost x. Range: from the lowest y to the highest y. Arrows go to infinity.', steps: [['Read the x-values from left to right.', `Domain: ${ivOf(sh.D)}`], ['Read the y-values from bottom to top.', `Range: ${ivOf(sh.R)}`], ['Closed dot → [ ]. Open dot → ( ). Infinity always gets ( ).', null]] };
+    hint: 'Domain: from the leftmost x to the rightmost x. Range: from the lowest y to the highest y. Arrows go to infinity.', steps: [['Read the x-values from left to right on the graph.', `Domain: ${ivOf(sh.D)}`, fig], ['Read the y-values from bottom to top.', `Range: ${ivOf(sh.R)}`], ['Closed dot → [ ]. Open dot → ( ). Infinity always gets ( ).', null]] };
 } };
 S['7i_inequality'] = { se: '2A.7I', name: 'Domain and range as inequalities', w: 2, gen() {
   let sh; do { sh = drShape(); } while (sh.kind === 'cube');
   const fig = grid({ curves: sh.curves, segs: sh.segs, pts: sh.pts, aria: 'The graph of a function' }), T = (d, r, vx = 'x', vy = 'y') => `Domain: ${ineqOf(d, vx)}<br>Range: ${ineqOf(r, vy)}`;
   return { type: 'mc', lead: 'The graph of a function is shown.', fig, q: 'What are the domain and range of this function?', choices: mc({ t: T(sh.D, sh.R) }, [{ t: T(sh.R, sh.D), why: 'Domain is about x (left to right). Range is about y (up and down).' }, { t: T(flipB(sh.D), flipB(sh.R)), why: 'A closed dot uses ≤ or ≥. An open dot uses < or >.' }, { t: T(sh.D, flipB(sh.R)), why: 'Check the range: closed dot means ≤ or ≥.' }, { t: T(flipB(sh.D), sh.R), why: 'Check the domain: closed dot means ≤ or ≥.' }, { t: T(sh.D, sh.R, 'y', 'x'), why: 'The domain uses x and the range uses y.' }]),
-    hint: 'Write x-values for the domain and y-values for the range. Closed dot: ≤ or ≥.', steps: [['x-values:', null, 'Domain: ' + ineqOf(sh.D, 'x')], ['y-values:', null, 'Range: ' + ineqOf(sh.R, 'y')]] };
+    hint: 'Write x-values for the domain and y-values for the range. Closed dot: ≤ or ≥.', steps: [['Read the x-values from left to right on the graph.', null, 'Domain: ' + ineqOf(sh.D, 'x') + fig], ['Read the y-values from bottom to top.', null, 'Range: ' + ineqOf(sh.R, 'y')]] };
 } };
 S['7i_convert'] = { se: '2A.7I', name: 'Interval notation and inequalities', w: 2, gen() {
   const lo = rint(-9, 3), hi = lo + rint(2, 10), kind = pick(['two', 'left', 'right']), c1 = G.rnd() < 0.5, c2 = G.rnd() < 0.5;
