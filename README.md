@@ -45,7 +45,7 @@ If a student is offline, the result waits on their device and sends the next tim
 
 Link straight to one topic by adding its code: `geometry/#g6d`, `algebra2/#a4d`, or `#mix` for the mixed review.
 
-Algebra 2 results go to their own tabs in the same sheet ("Algebra 2 Started" and "Algebra 2 Finished").
+Geometry results go to "Geometry Started" and "Geometry Finished", and Algebra 2 results go to "Algebra 2 Started" and "Algebra 2 Finished", all in the same sheet.
 
 ## For another teacher
 

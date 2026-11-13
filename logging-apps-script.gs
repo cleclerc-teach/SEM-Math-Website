@@ -10,19 +10,21 @@
  *     Click Deploy, approve the permissions, and copy the Web app URL (ends in /exec).
  *  4. Paste that URL into logUrl in settings.js and re-upload settings.js.
  *
- * Tabs fill in automatically. Geometry: "Finished" (one row per completed review, with the score
- * per TEKS and the questions missed) and "Started" (one row each time a student starts).
- * Algebra 2 goes to its own tabs: "Algebra 2 Finished" and "Algebra 2 Started".
+ * Tabs fill in automatically. Geometry: "Geometry Finished" (one row per completed review, with
+ * the score per TEKS and the questions missed) and "Geometry Started" (one row each time a student
+ * starts). Algebra 2 goes to its own tabs: "Algebra 2 Finished" and "Algebra 2 Started".
+ * Older tabs named just "Finished" and "Started" are renamed to the Geometry names automatically,
+ * with their rows kept.
  * If you edit this script later, use Deploy > Manage deployments > Edit > New version,
  * so the URL stays the same.
  */
 const TEKS_ORDER = ['G.2B', 'G.2C', 'G.3B', 'G.4B', 'G.4C', 'G.5A', 'G.5B', 'G.5C', 'G.5D', 'G.6A', 'G.6C', 'G.6D', 'G.11A'];
 const A2_TEKS_ORDER = ['2A.2A', '2A.3A', '2A.3B', '2A.3F', '2A.4B', '2A.4D', '2A.4F', '2A.4H', '2A.6C', '2A.6D', '2A.6E', '2A.6F', '2A.7A', '2A.7I'];
 
-// Each course writes to its own pair of tabs. Geometry keeps the original tab names.
+// Each course writes to its own pair of tabs.
 function course_(ev) {
   if (ev.course === 'Algebra 2') return { prefix: 'Algebra 2 ', teks: A2_TEKS_ORDER, cls: 'Class' };
-  return { prefix: '', teks: TEKS_ORDER, cls: 'Period' };
+  return { prefix: 'Geometry ', teks: TEKS_ORDER, cls: 'Period' };
 }
 
 function doPost(e) {
@@ -50,7 +52,7 @@ function doPost(e) {
 function doGet(e) {
   const ss = book_();
   if (e && e.parameter && e.parameter.test) {
-    const sh = sheet_(ss, 'Started', ['Received', 'First name', 'Last name', 'Period', 'Difficulty', 'Started']);
+    const sh = sheet_(ss, 'Geometry Started', ['Received', 'First name', 'Last name', 'Period', 'Difficulty', 'Started']);
     sh.appendRow([new Date(), 'TEST', 'ROW (delete me)', '', '', '']);
   }
   return ContentService.createTextOutput('The ACP Prep log is running. Results go to: ' + ss.getName() + '  ' + ss.getUrl());
@@ -77,6 +79,11 @@ function names_(name) {
 
 function sheet_(ss, name, header) {
   let sh = ss.getSheetByName(name);
+  // An older version used plain "Started" and "Finished" for Geometry. Rename those tabs, keeping their rows.
+  if (!sh && name.indexOf('Geometry ') === 0) {
+    sh = ss.getSheetByName(name.slice('Geometry '.length));
+    if (sh) sh.setName(name);
+  }
   if (!sh) {
     sh = ss.insertSheet(name);
     sh.appendRow(header);
