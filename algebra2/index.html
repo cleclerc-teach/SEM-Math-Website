@@ -1683,14 +1683,6 @@ const TEKS = [
       { t: 'Parabolas move the same way', rule: '`g(x) = a(x - c)^2 + d` is `f(x) = x^2` moved the same way: the vertex goes to `(c, d)`, and a stretches, compresses, or flips it. One unit right of the vertex, the graph goes up a.', ex: ['6c_parabola', 3], watch: '`(x + 4)^2` moves the parabola LEFT 4, just like `|x + 4|`.' },
       { t: 'Graph it', rule: 'The new vertex is `(c, d)`. From the vertex, the slope of each side is a and −a.', ex: ['6c_graph', 2], watch: 'Check the direction it opens and the vertex. Wrong choices usually get one of them backward.' }
     ], tip: 'Type `f(x)` and `g(x)` into the calculator to see the change.' },
-  { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
-    teks: 'Graph the functions f(x) = x³ and f(x) = |x|, and, when applicable, analyze the key attributes such as domain, range, intercepts, symmetries, and maximum and minimum given an interval.',
-    why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its vertex, intercepts, symmetry, and its maximum or minimum on an interval. (Domain and range are practiced in 7I.)',
-    moves: [
-      { t: 'Start at the vertex', rule: 'In `f(x) = a|x - h| + k` the vertex is `(h, k)`. If a is positive the graph opens up and the vertex is a minimum. If a is negative it opens down and the vertex is a maximum. The axis of symmetry is `x = h`.', ex: ['2a_abs_attr', 3], watch: 'The sign inside the bars is the opposite of h. `|x + 4|` has its vertex at `x = -4`.' },
-      { t: 'Roots of a cubic', rule: 'Each root r gives a factor `(x - r)`. A root at 0 gives the factor x. Multiply the factors to get the function.', ex: ['2a_cubic_roots', 2], watch: 'A root at `x = 3` gives `(x - 3)`, not `(x + 3)`.' },
-      { t: 'Max and min on an interval', rule: 'Find the y-value at both ends of the interval. For an absolute value graph, also check the vertex if it is inside the interval. The biggest is the maximum and the smallest is the minimum.', ex: ['2a_extrema', 4], watch: 'A cubic like `y = x^3` has no turning point, so on an interval its max and min are at the endpoints.' }
-    ], tip: 'Put the function in the graphing calculator and look at the table. It checks intercepts and maximum or minimum values in seconds.' },
   { id: '2A.7I', code: '7I', items: 2, strand: 'fig', short: 'Domain and range', title: 'Domain and Range: Interval and Inequality Notation',
     teks: 'Write the domain and range of a function in interval notation and inequalities. (Set notation is crossed out on this ACP.)',
     why: 'Domain is the x-values, read left to right. Range is the y-values, read bottom to top. Write them with brackets or with inequality signs.',
@@ -1701,6 +1693,14 @@ const TEKS = [
       { t: 'From an equation', rule: 'No graph? Sketch one. Find the vertex `(h, k)` and which way it opens. Absolute value graphs and parabolas use every x, and y starts at k. A cubic uses every x and every y.', ex: ['7i_equation', 3], watch: 'The range starts at k, the y-value of the vertex, not at h.' },
       { t: 'Switch between them', rule: 'Read each end on its own: the number, and whether it is included.', ex: ['7i_convert', 4], watch: 'Infinity is never included, so it never gets a bracket.' }
     ], tip: 'Trace the graph from left to right with your finger for the domain, then bottom to top for the range.' },
+  { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
+    teks: 'Graph the functions f(x) = x³ and f(x) = |x|, and, when applicable, analyze the key attributes such as domain, range, intercepts, symmetries, and maximum and minimum given an interval.',
+    why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its vertex, intercepts, symmetry, and its maximum or minimum on an interval. (Domain and range are practiced in 7I.)',
+    moves: [
+      { t: 'Start at the vertex', rule: 'In `f(x) = a|x - h| + k` the vertex is `(h, k)`. If a is positive the graph opens up and the vertex is a minimum. If a is negative it opens down and the vertex is a maximum. The axis of symmetry is `x = h`.', ex: ['2a_abs_attr', 3], watch: 'The sign inside the bars is the opposite of h. `|x + 4|` has its vertex at `x = -4`.' },
+      { t: 'Roots of a cubic', rule: 'Each root r gives a factor `(x - r)`. A root at 0 gives the factor x. Multiply the factors to get the function.', ex: ['2a_cubic_roots', 2], watch: 'A root at `x = 3` gives `(x - 3)`, not `(x + 3)`.' },
+      { t: 'Max and min on an interval', rule: 'Find the y-value at both ends of the interval. For an absolute value graph, also check the vertex if it is inside the interval. The biggest is the maximum and the smallest is the minimum.', ex: ['2a_extrema', 4], watch: 'A cubic like `y = x^3` has no turning point, so on an interval its max and min are at the endpoints.' }
+    ], tip: 'Put the function in the graphing calculator and look at the table. It checks intercepts and maximum or minimum values in seconds.' },
   { id: '2A.3A', code: '3A', items: 2, strand: 'coord', short: 'Write systems', title: 'Write a System of Equations',
     teks: 'Formulate systems of equations, including systems consisting of three linear equations in three variables and systems consisting of two equations, the first linear and the second quadratic.',
     why: 'Turn words or a graph into equations. Word problems become three linear equations. A graph of a line and a parabola becomes one linear and one quadratic equation.',
