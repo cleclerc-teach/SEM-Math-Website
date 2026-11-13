@@ -1674,15 +1674,6 @@ const STRANDS = {
 };
 const ORDER = ['fig', 'coord', 'proof', 'logic'];
 const TEKS = [
-  { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
-    teks: 'Graph the functions f(x) = x³ and f(x) = |x|, and, when applicable, analyze the key attributes such as domain, range, intercepts, symmetries, and maximum and minimum given an interval.',
-    why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its domain, range, vertex, intercepts, and symmetry.',
-    moves: [
-      { t: 'Start at the vertex', rule: 'In `f(x) = a|x - h| + k` the vertex is `(h, k)`. If a is positive the graph opens up and the vertex is a minimum. If a is negative it opens down and the vertex is a maximum. The axis of symmetry is `x = h`.', ex: ['2a_abs_attr', 3], watch: 'The sign inside the bars is the opposite of h. `|x + 4|` has its vertex at `x = -4`.' },
-      { t: 'Domain and range', rule: 'Both parent functions take every x, so the domain is always all real numbers. A cubic also reaches every y. An absolute value graph only reaches y-values on one side of the vertex.', ex: ['2a_abs_dr', 6], watch: 'The vertex is on the graph, so its y-value is included in the range: use a bracket.' },
-      { t: 'Roots of a cubic', rule: 'Each root r gives a factor `(x - r)`. A root at 0 gives the factor x. Multiply the factors to get the function.', ex: ['2a_cubic_roots', 2], watch: 'A root at `x = 3` gives `(x - 3)`, not `(x + 3)`.' },
-      { t: 'Max and min on an interval', rule: 'Find the y-value at both ends of the interval. For an absolute value graph, also check the vertex if it is inside the interval. The biggest is the maximum and the smallest is the minimum.', ex: ['2a_extrema', 4], watch: 'A cubic like `y = x^3` has no turning point, so on an interval its max and min are at the endpoints.' }
-    ], tip: 'Put the function in the graphing calculator and look at the table. It checks domain, range, and intercepts in seconds.' },
   { id: '2A.6C', code: '6C', items: 2, strand: 'fig', short: 'Transformations', title: 'Transformations of |x| and x²',
     teks: 'Analyze the effect on the graphs of f(x) = |x| when f(x) is replaced by af(x), f(bx), f(x − c), and f(x) + d for specific positive and negative real values of a, b, c, and d.',
     why: 'The same four numbers move an absolute value graph and a parabola the same way. Outside numbers act the way you expect. The number inside with x acts backward.',
@@ -1692,6 +1683,15 @@ const TEKS = [
       { t: 'Parabolas move the same way', rule: '`g(x) = a(x - c)^2 + d` is `f(x) = x^2` moved the same way: the vertex goes to `(c, d)`, and a stretches, compresses, or flips it. One unit right of the vertex, the graph goes up a.', ex: ['6c_parabola', 3], watch: '`(x + 4)^2` moves the parabola LEFT 4, just like `|x + 4|`.' },
       { t: 'Graph it', rule: 'The new vertex is `(c, d)`. From the vertex, the slope of each side is a and −a.', ex: ['6c_graph', 2], watch: 'Check the direction it opens and the vertex. Wrong choices usually get one of them backward.' }
     ], tip: 'Type `f(x)` and `g(x)` into the calculator to see the change.' },
+  { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
+    teks: 'Graph the functions f(x) = x³ and f(x) = |x|, and, when applicable, analyze the key attributes such as domain, range, intercepts, symmetries, and maximum and minimum given an interval.',
+    why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its domain, range, vertex, intercepts, and symmetry.',
+    moves: [
+      { t: 'Start at the vertex', rule: 'In `f(x) = a|x - h| + k` the vertex is `(h, k)`. If a is positive the graph opens up and the vertex is a minimum. If a is negative it opens down and the vertex is a maximum. The axis of symmetry is `x = h`.', ex: ['2a_abs_attr', 3], watch: 'The sign inside the bars is the opposite of h. `|x + 4|` has its vertex at `x = -4`.' },
+      { t: 'Domain and range', rule: 'Both parent functions take every x, so the domain is always all real numbers. A cubic also reaches every y. An absolute value graph only reaches y-values on one side of the vertex.', ex: ['2a_abs_dr', 6], watch: 'The vertex is on the graph, so its y-value is included in the range: use a bracket.' },
+      { t: 'Roots of a cubic', rule: 'Each root r gives a factor `(x - r)`. A root at 0 gives the factor x. Multiply the factors to get the function.', ex: ['2a_cubic_roots', 2], watch: 'A root at `x = 3` gives `(x - 3)`, not `(x + 3)`.' },
+      { t: 'Max and min on an interval', rule: 'Find the y-value at both ends of the interval. For an absolute value graph, also check the vertex if it is inside the interval. The biggest is the maximum and the smallest is the minimum.', ex: ['2a_extrema', 4], watch: 'A cubic like `y = x^3` has no turning point, so on an interval its max and min are at the endpoints.' }
+    ], tip: 'Put the function in the graphing calculator and look at the table. It checks domain, range, and intercepts in seconds.' },
   { id: '2A.7I', code: '7I', items: 2, strand: 'fig', short: 'Domain and range', title: 'Domain and Range: Interval and Inequality Notation',
     teks: 'Write the domain and range of a function in interval notation and inequalities. (Set notation is crossed out on this ACP.)',
     why: 'Domain is the x-values, read left to right. Range is the y-values, read bottom to top. Write them with brackets or with inequality signs.',
