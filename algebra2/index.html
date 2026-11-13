@@ -980,20 +980,20 @@ S['2a_abs_attr'] = { se: '2A.2A', name: 'Key attributes of an absolute value fun
   const up = cval(a) > 0, fx = aform(a, h, k), range = up ? iv(k, INF, true, false) : iv(NINF, k, false, true);
   const yint = cval(a) * Math.abs(h) + k, ext = up ? 'minimum' : 'maximum', other = up ? 'maximum' : 'minimum';
   const T = [
-    { t: `The range is ${M(range)}.`, ok: true, why: `The vertex is ${BP(h, k)} and the graph opens ${up ? 'up' : 'down'}, so y goes ${up ? 'up from' : 'down from'} ${k}.` },
+    { t: `The vertex is ${BP(h, k)}.`, ok: true, why: `In ${M('a|x - h| + k')} the vertex is (h, k).` },
     { t: `The axis of symmetry is the line ${M('x = ' + h)}.`, ok: true, why: `The graph is symmetric about the vertical line through the vertex, x = ${h}.` },
     { t: `The ${ext} value is ${M('y = ' + k)}.`, ok: true, why: `The vertex ${BP(h, k)} is the ${up ? 'lowest' : 'highest'} point.` },
     { t: `The y-intercept is ${BP(0, ns(yint))}.`, ok: true, why: `f(0) = ${cstr(a)}|0 ${h > 0 ? '-' : '+'} ${Math.abs(h)}| ${k < 0 ? '-' : '+'} ${Math.abs(k)} = ${ns(yint)}.` }
   ];
   const F = [
-    { t: `The range is ${M(up ? iv(NINF, k, false, true) : iv(k, INF, true, false))}.`, why: `The graph opens ${up ? 'up' : 'down'}, so the range goes ${up ? 'up' : 'down'} from the vertex.` },
+    { t: `The vertex is ${BP(-h, k)}.`, why: `${M('|' + shiftIn(h) + '|')} is zero at x = ${h}, so the vertex is ${BP(h, k)}.` },
     { t: `The axis of symmetry is the line ${M('x = ' + (-h))}.`, why: `${M('|' + shiftIn(h) + '|')} is zero at x = ${h}, not ${-h}. Watch the sign inside the bars.` },
     { t: `The ${other} value is ${M('y = ' + k)}.`, why: `The graph opens ${up ? 'up' : 'down'}, so the vertex is a ${ext}, not a ${other}.` },
-    { t: `The domain is ${M(up ? 'x ≥ ' + h : 'x ≤ ' + h)}.`, why: 'Any x can go into an absolute value. The domain is all real numbers.' },
+    { t: `The axis of symmetry is the line ${M('y = ' + k)}.`, why: `The axis of symmetry is a vertical line through the vertex: ${M('x = ' + h)}.` },
     { t: `The y-intercept is ${BP(0, k)}.`, why: `${M('y = ' + k)} is the vertex height. The y-intercept is f(0) = ${ns(yint)}.` }
   ];
   const fig = G.rnd() < 0.5 ? grid({ curves: [{ f: x => cval(a) * Math.abs(x - h) + k }], aria: 'Graph of ' + fx }) : '';
-  const steps = [[`Read the vertex from ${M('a|x - h| + k')}: h = ${h}, k = ${k}.`, `vertex ${P(h, k)}`], [`a = ${cstr(a)} is ${up ? 'positive, so the graph opens up and the vertex is a minimum' : 'negative, so the graph opens down and the vertex is a maximum'}.`, `range: ${range}`, grid({ curves: [{ f: x => cval(a) * Math.abs(x - h) + k }], pts: [{ x: h, y: k, label: P(h, k) }], aria: 'Graph of ' + fx })], ['Every x works in an absolute value, so the domain is all real numbers. The axis of symmetry is the vertical line through the vertex.', `x = ${h}`]];
+  const steps = [[`Read the vertex from ${M('a|x - h| + k')}: h = ${h}, k = ${k}.`, `vertex ${P(h, k)}`], [`a = ${cstr(a)} is ${up ? 'positive, so the graph opens up and the vertex is a minimum' : 'negative, so the graph opens down and the vertex is a maximum'}.`, `${ext}: y = ${k}`, grid({ curves: [{ f: x => cval(a) * Math.abs(x - h) + k }], pts: [{ x: h, y: k, label: P(h, k) }], aria: 'Graph of ' + fx })], ['The axis of symmetry is the vertical line through the vertex.', `x = ${h}`], ['The y-intercept is f(0).', `f(0) = ${ns(yint)}`]];
   if (G.LV >= 2) {
     const tr = sample(T, 2), fl = sample(F, 3);
     return { type: 'multi', lead: fig ? `The graph of ${M(fx)} is shown.` : '', fig, q: (fig ? '' : `Given the function ${M(fx)}, which`) + (fig ? 'Which' : '') + ' statements represent key attributes of this function? Select TWO correct answers.', choices: shuffle(tr.concat(fl.map(x => Object.assign({ ok: false }, x)))), hint: 'Find the vertex and the direction it opens first.', steps };
@@ -1002,7 +1002,7 @@ S['2a_abs_attr'] = { se: '2A.2A', name: 'Key attributes of an absolute value fun
   return { type: 'mc', lead: fig ? `The graph of ${M(fx)} is shown.` : '', fig, q: fig ? 'Which statement represents a key attribute of this function?' : `Given the function ${M(fx)}, which statement represents a key attribute of this function?`, choices: mc({ t: key.t }, shuffle(F).map(x => ({ t: x.t, why: x.why }))), wide: true, hint: 'Find the vertex and the direction the graph opens.', steps };
 } };
 
-S['2a_abs_dr'] = { se: '2A.2A', name: 'Domain and range of |x| and x³ functions', w: 2, gen() {
+S['2a_abs_dr'] = { se: '2A.7I', name: 'Domain and range of |x| and x³ functions', w: 2, gen() {
   const cubic = G.rnd() < 0.35, a = pick([1, -1, 2, -2, 3, -3]), h = nz(-6, 6), k = nz(-8, 8);
   if (cubic) {
     const fx = cform(a, h, k), all = iv(NINF, INF, false, false);
@@ -1612,7 +1612,7 @@ const D = {
 Object.keys(G.SKILLS).forEach(id => { G.SKILLS[id].d = D[id] || 1; });
 G.MW = {};
 G.FACETS = {
-  '2A.2A': [{ k: 'abs', name: 'Domain, range, vertex, symmetry, and intercepts of |x| functions', w: 3, s: ['2a_abs_attr', '2a_abs_dr'] }, { k: 'cubic', name: 'Cubic functions: roots, domain and range, extremes on an interval', w: 2, s: ['2a_cubic_roots', '2a_extrema', '2a_abs_dr'] }],
+  '2A.2A': [{ k: 'abs', name: 'Vertex, symmetry, intercepts, and max or min of |x| functions', w: 3, s: ['2a_abs_attr'] }, { k: 'cubic', name: 'Cubic functions: roots and extremes on an interval', w: 2, s: ['2a_cubic_roots', '2a_extrema'] }],
   '2A.3A': [{ k: 'three', name: 'Three linear equations in three variables from a situation', w: 3, s: ['3a_three_var'] }, { k: 'lq', name: 'A linear and a quadratic equation from a graph', w: 2, s: ['3a_linquad'] }],
   '2A.3B': [{ k: 'solve', name: 'Solve the system', w: 3, s: ['3b_solve', '3b_context'] }, { k: 'mat', name: 'Set up the matrix equation', w: 2, s: ['3b_matrix'] }],
   '2A.3F': [{ k: 'graph', name: 'Match a system and its graph', w: 3, s: ['3f_graph_to_sys', '3f_sys_to_graph'] }, { k: 'pt', name: 'Test points in the system', w: 2, s: ['3f_point'] }],
@@ -1625,7 +1625,7 @@ G.FACETS = {
   '2A.6E': [{ k: 'solve', name: 'Solve, including extraneous solutions', w: 3, s: ['6e_one', '6e_set'] }, { k: 'setup', name: 'Set up the two cases', w: 2, s: ['6e_setup', '6e_set'] }],
   '2A.6F': [{ k: 'solve', name: 'Solution as inequalities', w: 3, s: ['6f_solve'] }, { k: 'nl', name: 'Solution on a number line', w: 2, s: ['6f_numberline'] }],
   '2A.7A': [{ k: 'mult', name: 'Multiply', w: 3, s: ['7a_mult', '7a_radical'] }, { k: 'add', name: 'Add, subtract, and simplify i²', w: 2, s: ['7a_part'] }],
-  '2A.7I': [{ k: 'graph', name: 'Domain and range from a graph', w: 3, s: ['7i_interval', '7i_inequality'] }, { k: 'eq', name: 'Domain and range from an equation', w: 3, s: ['7i_equation'] }, { k: 'conv', name: 'Interval notation and inequalities', w: 2, s: ['7i_convert'] }]
+  '2A.7I': [{ k: 'graph', name: 'Domain and range from a graph', w: 3, s: ['7i_interval', '7i_inequality'] }, { k: 'eq', name: 'Domain and range from an equation', w: 3, s: ['7i_equation', '2a_abs_dr'] }, { k: 'conv', name: 'Interval notation and inequalities', w: 2, s: ['7i_convert'] }]
 };
 G.MODES = {
   1: { key: 'medium', name: 'Medium', tag: 'ACP level', blurb: 'Matches the SchoolCity example items: mostly multiple choice, a few typed answers, and 1 or 2 of the hardest item types.',
@@ -1685,19 +1685,19 @@ const TEKS = [
     ], tip: 'Type `f(x)` and `g(x)` into the calculator to see the change.' },
   { id: '2A.2A', code: '2A', items: 2, strand: 'fig', short: 'Parent functions', title: 'Attributes of f(x) = x³ and f(x) = |x|',
     teks: 'Graph the functions f(x) = x³ and f(x) = |x|, and, when applicable, analyze the key attributes such as domain, range, intercepts, symmetries, and maximum and minimum given an interval.',
-    why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its domain, range, vertex, intercepts, and symmetry.',
+    why: 'Only two parent functions are tested here: the cubic and the absolute value. Know what each graph looks like, then read its vertex, intercepts, symmetry, and its maximum or minimum on an interval. (Domain and range are practiced in 7I.)',
     moves: [
       { t: 'Start at the vertex', rule: 'In `f(x) = a|x - h| + k` the vertex is `(h, k)`. If a is positive the graph opens up and the vertex is a minimum. If a is negative it opens down and the vertex is a maximum. The axis of symmetry is `x = h`.', ex: ['2a_abs_attr', 3], watch: 'The sign inside the bars is the opposite of h. `|x + 4|` has its vertex at `x = -4`.' },
-      { t: 'Domain and range', rule: 'Both parent functions take every x, so the domain is always all real numbers. A cubic also reaches every y. An absolute value graph only reaches y-values on one side of the vertex.', ex: ['2a_abs_dr', 6], watch: 'The vertex is on the graph, so its y-value is included in the range: use a bracket.' },
       { t: 'Roots of a cubic', rule: 'Each root r gives a factor `(x - r)`. A root at 0 gives the factor x. Multiply the factors to get the function.', ex: ['2a_cubic_roots', 2], watch: 'A root at `x = 3` gives `(x - 3)`, not `(x + 3)`.' },
       { t: 'Max and min on an interval', rule: 'Find the y-value at both ends of the interval. For an absolute value graph, also check the vertex if it is inside the interval. The biggest is the maximum and the smallest is the minimum.', ex: ['2a_extrema', 4], watch: 'A cubic like `y = x^3` has no turning point, so on an interval its max and min are at the endpoints.' }
-    ], tip: 'Put the function in the graphing calculator and look at the table. It checks domain, range, and intercepts in seconds.' },
+    ], tip: 'Put the function in the graphing calculator and look at the table. It checks intercepts and maximum or minimum values in seconds.' },
   { id: '2A.7I', code: '7I', items: 2, strand: 'fig', short: 'Domain and range', title: 'Domain and Range: Interval and Inequality Notation',
     teks: 'Write the domain and range of a function in interval notation and inequalities. (Set notation is crossed out on this ACP.)',
     why: 'Domain is the x-values, read left to right. Range is the y-values, read bottom to top. Write them with brackets or with inequality signs.',
     moves: [
       { t: 'Interval notation', rule: 'A closed dot gets a bracket `[` or `]`. An open dot gets a parenthesis. An arrow goes to `∞` or `-∞`, which always gets a parenthesis.', ex: ['7i_interval', 3], watch: 'Domain and range switched is always a choice. Domain is x.' },
       { t: 'Inequalities', rule: 'A closed dot is `≤` or `≥`. An open dot is `<` or `>`. Write the domain with x and the range with y.', ex: ['7i_inequality', 2], watch: '`[2, 7)` means `2 ≤ x < 7`. Each end keeps its own symbol.' },
+      { t: 'Domain and range of |x| and x³', rule: 'Both parent functions take every x, so the domain is always all real numbers. A cubic also reaches every y. An absolute value graph only reaches y-values on one side of the vertex.', ex: ['2a_abs_dr', 6], watch: 'The vertex is on the graph, so its y-value is included in the range: use a bracket.' },
       { t: 'From an equation', rule: 'No graph? Sketch one. Find the vertex `(h, k)` and which way it opens. Absolute value graphs and parabolas use every x, and y starts at k. A cubic uses every x and every y.', ex: ['7i_equation', 3], watch: 'The range starts at k, the y-value of the vertex, not at h.' },
       { t: 'Switch between them', rule: 'Read each end on its own: the number, and whether it is included.', ex: ['7i_convert', 4], watch: 'Infinity is never included, so it never gets a bracket.' }
     ], tip: 'Trace the graph from left to right with your finger for the domain, then bottom to top for the range.' },
