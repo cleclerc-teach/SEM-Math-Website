@@ -550,9 +550,9 @@ p { margin: 0 0 .75rem; }
   <header class="side">
     <div class="side-top">
       <button class="brand" data-act="go" data-go="home" aria-label="Geometry ACP Prep home"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="ba" d="M5 34 A 29 29 0 0 1 34 8"/><polygon class="bt" points="5,34 35,34 20,8"/></svg><span class="brand-t"><small>Geometry</small>ACP Prep</span></button>
-      <button class="mixbtn" data-act="go" data-go="mix" data-nav="mix">Mixed review</button>
-      <button class="mixbtn alt tpbtn" data-act="go" data-go="tp" data-nav="tp"><svg class="tri" viewBox="0 0 14 12.5" aria-hidden="true"><polygon points="7,1 13,11.4 1,11.4"/></svg>Targeted practice</button>
-      <button class="mixbtn alt" data-act="go" data-go="prog" data-nav="prog">My progress</button>
+      <button class="mixbtn" data-act="go" data-go="mix" data-nav="mix">Mixed Review</button>
+      <button class="mixbtn alt tpbtn" data-act="go" data-go="tp" data-nav="tp"><svg class="tri" viewBox="0 0 14 12.5" aria-hidden="true"><polygon points="7,1 13,11.4 1,11.4"/></svg>Targeted Practice</button>
+      <button class="mixbtn alt" data-act="go" data-go="prog" data-nav="prog">My Progress</button>
       <a class="mixbtn homelink" href="../index.html"><svg class="hico" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.2 10 3l7 6.2M5 7.6V17h3.6v-4.6h2.8V17H15V7.6"/></svg>Home</a>
     </div>
     <nav class="tabs" aria-label="Topics" id="tabs"></nav>
@@ -4168,7 +4168,7 @@ function drawer() {
 /* ---------- render ---------- */
 function renderTabs() {
   const nav = document.getElementById('tabs'); if (!nav) return;
-  let h = `<button class="tab xt" data-act="go" data-go="tp" data-nav="tp"><span class="tt">Targeted practice</span></button><button class="tab xt" data-act="go" data-go="prog" data-nav="prog"><span class="tt">My progress</span></button>`;
+  let h = `<button class="tab xt" data-act="go" data-go="tp" data-nav="tp"><span class="tt">Targeted Practice</span></button><button class="tab xt" data-act="go" data-go="prog" data-nav="prog"><span class="tt">My Progress</span></button>`;
   for (const k of ['coord', 'logic', 'proof', 'fig']) {
     h += `<p class="grp c-${k}">${STRANDS[k].short}</p>`;
     h += TEKS.filter(t => t.strand === k).map(t => { const all = doneCount(t.skills) === t.skills.length; return `<button class="tab c-${t.strand}" data-act="go" data-go="${t.code}" data-nav="${t.code}" title="${esc(t.title)}"><span class="n">${t.code}</span><span class="tt">${t.short}</span>${all ? '<span class="tck" aria-label="all skills checked off">✓</span>' : ''}</button>`; }).join('');
