@@ -12,7 +12,7 @@ window.SITE_SETTINGS = {
   // How students see your name ("Show this record to Ms. Leclerc").
   teacher: 'Ms. Leclerc',
 
-  // The choices in the "Class period" drop-down on the mixed review.
+  // The choices in the "Class period" drop-down on the Geometry mixed review.
   periods: ['1st period', '3rd period', '5th period', '6th period', 'Other', "Ms. Vergou's Student"],
 
   // Optional: your Google Apps Script web app address, so every mixed review
@@ -24,7 +24,9 @@ window.SITE_SETTINGS = {
   // (like algebra2/) and set ready: true. Cards with ready: false show "Coming soon".
   courses: [
     { name: 'Geometry', folder: 'geometry/index.html', test: 'Semester 1 ACP', blurb: 'Lessons and practice for all 13 TEKS, plus a mixed review weighted like the ACP.', ready: true },
-    { name: 'Algebra 2', folder: 'algebra2/index.html', test: 'ACP', blurb: 'Coming soon.', ready: false }
+    // Algebra 2 has its own class choices (periods) and a preselected default.
+    { name: 'Algebra 2', folder: 'algebra2/index.html', test: 'Semester 1 ACP', blurb: 'Lessons and practice for all 14 TEKS, plus a mixed review weighted like the ACP.', ready: true,
+      classLabel: 'Class', periods: ["Ms. Leclerc's Student", 'Other'], defaultPeriod: "Ms. Leclerc's Student" }
   ]
 
 };

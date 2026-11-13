@@ -1,8 +1,13 @@
-# Geometry ACP Prep (Semester 1)
+# ACP Prep: Geometry and Algebra 2 (Semester 1)
 
-A free practice site for the Geometry Advanced Semester 1 ACP: lessons and endless practice for all 13 TEKS
+Free practice sites for the Semester 1 ACPs. **Geometry Advanced**: lessons and endless practice for all 13 TEKS
 (G.2B, 2C, 3B, 4B, 4C, 5A, 5B, 5C, 5D, 6A, 6C, 6D, 11A) plus a 28- or 15-question mixed review weighted like
 the Dallas ISD blueprint. Every question is generated fresh, so students never run out.
+
+**Algebra II Advanced** (`algebra2/`): lessons and practice for all 14 TEKS (2A.2A, 3A, 3B, 3F, 4B, 4D, 4F, 4H,
+6C, 6D, 6E, 6F, 7A, 7I) plus a 28- or 14-question mixed review. Content crossed out on the 2026-27 blueprint is never
+used (only the x³ and |x| parent functions, no focus/directrix, no square root equations, no set notation).
+Its class choices are set in its own entry in the `courses` list in `settings.js` (`periods`, `defaultPeriod`).
 
 Adapted with permission from Troy's site (weloveadamsonmath.github.io/GeometryACP1).
 
@@ -15,6 +20,7 @@ Adapted with permission from Troy's site (weloveadamsonmath.github.io/GeometryAC
 | `logging-apps-script.gs` | Paste into Google Apps Script to receive results | Copy/paste only |
 | `index.html` | The home page (course cards) | No |
 | `geometry/index.html` | The whole Geometry site | No |
+| `algebra2/index.html` | The whole Algebra 2 site | No |
 
 ## Adding a course later (e.g. Algebra 2)
 
@@ -37,7 +43,9 @@ If a student is offline, the result waits on their device and sends the next tim
 3. Go to **Settings > Pages**. Under "Branch," choose `main` and `/ (root)`, then **Save**.
 4. In a minute or two the site is live at `https://YOUR-USERNAME.github.io/GeometryACP/`.
 
-Link straight to one topic by adding its code: `.../GeometryACP/#g6d`, `#g2c`, `#mix` for the mixed review.
+Link straight to one topic by adding its code: `geometry/#g6d`, `algebra2/#a4d`, or `#mix` for the mixed review.
+
+Algebra 2 results go to their own tabs in the same sheet ("Algebra 2 Started" and "Algebra 2 Finished").
 
 ## For another teacher
 
