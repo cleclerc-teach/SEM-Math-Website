@@ -75,6 +75,8 @@ p { margin: 0 0 .75rem; }
 .mixbtn[aria-current="page"] { box-shadow: 3px 3px 0 var(--npb); }
 .mixbtn.alt { background: var(--sheet); color: var(--ink); }
 .mixbtn.alt::before { border-radius: 50%; transform: none; }
+.mixbtn.tpbtn::before { display: none; }
+.mixbtn .tri { width: .8rem; height: .72rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 .nv.fl::before { content: "⚑"; position: absolute; top: 1px; right: 3px; font-size: .62rem; color: var(--bad); }
 .navkey .k.fl { background: var(--sheet); } .navkey .k.fl::after { content: "⚑"; position: absolute; top: -3px; left: 1px; font-size: .6rem; color: var(--bad); }
 .ladder { display: inline-flex; flex-direction: column; border: 1.5px solid var(--ink); background: var(--sheet); min-width: 8.5rem; }
@@ -546,7 +548,7 @@ p { margin: 0 0 .75rem; }
     <div class="side-top">
       <button class="brand" data-act="go" data-go="home" aria-label="Geometry ACP Prep home"><svg viewBox="0 0 40 40" aria-hidden="true"><path class="ba" d="M5 34 A 29 29 0 0 1 34 8"/><polygon class="bt" points="5,34 35,34 20,8"/></svg><span class="brand-t"><small>Geometry</small>ACP Prep</span></button>
       <button class="mixbtn" data-act="go" data-go="mix" data-nav="mix">Mixed review</button>
-      <button class="mixbtn alt" data-act="go" data-go="tp" data-nav="tp">Targeted practice</button>
+      <button class="mixbtn alt tpbtn" data-act="go" data-go="tp" data-nav="tp"><svg class="tri" viewBox="0 0 14 12.5" aria-hidden="true"><polygon points="7,1 13,11.4 1,11.4"/></svg>Targeted practice</button>
       <button class="mixbtn alt" data-act="go" data-go="prog" data-nav="prog">My progress</button>
       <a class="allcourses" href="../index.html">← All courses</a>
     </div>
