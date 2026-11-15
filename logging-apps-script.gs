@@ -1,5 +1,5 @@
 /**
- * ACP Prep (Geometry and Algebra 2): log mixed reviews to a Google Sheet (optional).
+ * ACP Prep (Geometry and Algebra 2): log mixed reviews, targeted practice, and lesson practice to a Google Sheet (optional).
  *
  * Setup (about 5 minutes, once):
  *  1. Make a new Google Sheet (sheets.new). Name it something like "ACP Prep Log".
@@ -13,6 +13,8 @@
  * Tabs fill in automatically. Geometry: "Geometry Finished" (one row per completed review, with
  * the score per TEKS and the questions missed) and "Geometry Started" (one row each time a student
  * starts). Algebra 2 goes to its own tabs: "Algebra 2 Finished" and "Algebra 2 Started".
+ * Practice on each lesson's Practice tab goes to "Geometry Practice" and "Algebra 2 Practice"
+ * (one row for every answer a student checks: the question, their answer, the correct answer, right or wrong).
  * Older tabs named just "Finished" and "Started" are renamed to the Geometry names automatically,
  * with their rows kept.
  * If you edit this script later, use Deploy > Manage deployments > Edit > New version,
@@ -38,6 +40,10 @@ function doPost(e) {
       const per = ev.per || {};
       sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.mode, ev.startLocal, ev.endLocal, ev.timeTaken, ev.score, ev.total, ev.pct / 100, ev.missed || '']).concat(c.teks.map(k => per[k] || '')));
       sh.getRange(sh.getLastRow(), 11).setNumberFormat('0%');
+    } else if (ev.event === 'practice') {
+      // One row for each answer a student checks on a lesson's Practice tab.
+      const sh = sheet_(ss, c.prefix + 'Practice', ['Received', 'First name', 'Last name', c.cls, 'Date', 'Time', 'TEKS', 'Topic', 'Skill', 'Difficulty', 'Question', 'Student answer', 'Correct answer', 'Result', 'Used a hint']);
+      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.dateLocal, ev.timeLocal, ev.teks, ev.topic, ev.skill, ev.mode, ev.question, ev.answer, ev.correct, ev.ok ? 'Right' : 'Wrong', ev.hint ? 'Yes' : '']));
     } else if (ev.event === 'start') {
       const sh = sheet_(ss, c.prefix + 'Started', ['Received', 'First name', 'Last name', c.cls, 'Difficulty', 'Started']);
       sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.mode, ev.startLocal]));

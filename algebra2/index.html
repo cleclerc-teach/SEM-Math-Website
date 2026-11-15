@@ -394,6 +394,7 @@ p { margin: 0 0 .75rem; }
 /* mixed review */
 .signin { display: grid; gap: 1.1rem; max-width: 30rem; }
 .field { display: grid; gap: .3rem; }
+.pracwho { margin: 0 0 .75rem; }
 .namerow { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
 .namerow input { text-transform: capitalize; font-family: var(--f-mono); letter-spacing: .08em; }
 .field label, .modes legend { font-weight: 600; }
@@ -2111,8 +2112,9 @@ function streakLine(P, t) {
   return `${name}: ${s} in a row. Get 3 right in a row, without a hint, to check it off.`;
 }
 function practice(t) {
+  if (pracGate()) return pracSignIn();
   const P = ensurePrac(t.code);
-  let h = `<div class="chips" role="group" aria-label="Choose a skill">${t.skills.map(s => `<button class="chip" data-act="skill" data-skill="${s}" aria-pressed="${P.src === s}">${skName(s)}${dots(s)}</button>`).join('')}<button class="chip" data-act="skill" data-skill="mix" aria-pressed="${P.src === 'mix'}">Mix them all</button></div>
+  let h = (LOG_URL ? pracBar(pracWho()) : '') + `<div class="chips" role="group" aria-label="Choose a skill">${t.skills.map(s => `<button class="chip" data-act="skill" data-skill="${s}" aria-pressed="${P.src === s}">${skName(s)}${dots(s)}</button>`).join('')}<button class="chip" data-act="skill" data-skill="mix" aria-pressed="${P.src === 'mix'}">Mix them all</button></div>
     <div class="lvrow" role="group" aria-label="Difficulty"><span class="fine">Difficulty:</span>${[1, 2, 3].map(m => `<button class="chip sm${(S.plv || 1) === m ? ' on' : ''}" data-act="plv" data-lv="${m}" aria-pressed="${(S.plv || 1) === m}">${G.MODES[m].name}</button>`).join('')}</div>
     <p class="streak" id="streak">${streakLine(P, t)}</p>
     <div id="card">${pracCard(P)}</div>
@@ -2193,11 +2195,68 @@ function submitTest() {
     per: Object.fromEntries(Object.entries(per).filter(([, v]) => v[1]).map(([k, v]) => [k, `${v[0]}/${v[1]}`])), missed: res.map((r, i) => r.ok ? null : `Q${i + 1} ${r.se}`).filter(Boolean).join(', ') });
 }
 
+/* ---------- lesson practice: who is practicing, and one row in the teacher's sheet per checked answer ---------- */
+function pracWho() { const w = saved.who || {}; return /^\S{3} \S{3}$/.test(w.name || '') && PERIODS.includes(w.period) ? w : null; }
+const pracGate = () => !!LOG_URL && !pracWho();
+function pracSignIn() {
+  const w = saved.who || {};
+  return `<form class="signin card" id="pracform" autocomplete="off" novalidate>
+    <p class="fine">Type your initials before you practice, so ${esc(TEACHER)} can see the problems you work on.</p>
+    <div class="namerow"><div class="field"><label for="st-first">First 3 letters of your first name</label><input id="st-first" type="text" maxlength="3" value="${esc((w.name || '').split(' ')[0] || '')}" placeholder="e.g. Mar" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="st-last">First 3 letters of your last name</label><input id="st-last" type="text" maxlength="3" value="${esc((w.name || '').split(' ')[1] || '')}" placeholder="e.g. Gar" autocomplete="off" spellcheck="false"></div></div>
+    <div class="field"><label for="st-per">${esc(CLASS_LABEL)}</label><select id="st-per">${PRESET ? '' : '<option value="">Choose your class</option>'}${PERIODS.map(p => `<option${(PERIODS.includes(w.period) ? w.period : PRESET) === p ? ' selected' : ''}>${esc(p)}</option>`).join('')}</select></div>
+    ${S.signErr ? `<p class="err" role="alert">${S.signErr}</p>` : ''}
+    <div><button class="btn primary" type="button" data-act="pracsign">Start practicing</button></div></form>`;
+}
+function doPracSign() {
+  const cap = v => v ? v[0].toUpperCase() + v.slice(1).toLowerCase() : v;
+  const f3 = document.getElementById('st-first').value.replace(/\s+/g, ''), l3 = document.getElementById('st-last').value.replace(/\s+/g, '');
+  const three = v => [...v].length === 3 && /^\p{L}+_*$/u.test(v);
+  const name = cap(f3) + ' ' + cap(l3), period = document.getElementById('st-per').value;
+  saved.who = Object.assign({}, saved.who, { name, period });
+  if (!three(f3)) { S.signErr = 'Type exactly 3 letters from the start of your first name (example: Maria → Mar). For a short name, fill with _ (Al → Al_).'; render(); document.getElementById('st-first').focus(); return; }
+  if (!three(l3)) { S.signErr = 'Type exactly 3 letters from the start of your last name (example: Garcia → Gar). For a short name, fill with _ (Li → Li_).'; render(); document.getElementById('st-last').focus(); return; }
+  if (!PERIODS.includes(period)) { S.signErr = 'Choose your class.'; render(); document.getElementById('st-per').focus(); return; }
+  S.signErr = ''; save(); render();
+}
+function pracBar(w) {
+  return `<p class="fine pracwho">Practicing as <b>${esc(w.name)}</b> · ${esc(w.period)}. Each answer you check is sent to ${esc(TEACHER)}. <button class="linkbtn" data-act="pracout">Not you?</button></p>`;
+}
+function plainText(html) { // the sheet gets plain text: x^2, (a)/(b), √(x)
+  const d = document.createElement('div'); d.innerHTML = html || '';
+  d.querySelectorAll('svg, .figbox').forEach(e => e.remove());
+  const wrap = t => /^[\w.−-]+$/.test(t.trim()) ? t.trim() : '(' + t.trim() + ')';
+  d.querySelectorAll('sup').forEach(e => { e.textContent = '^' + wrap(e.textContent); });
+  d.querySelectorAll('.fr').forEach(e => { const n = e.querySelector('.nu'), m = e.querySelector('.de'); if (n && m) e.textContent = wrap(n.textContent) + '/' + wrap(m.textContent); });
+  d.querySelectorAll('.rt').forEach(e => { const r = e.querySelector('.rad'); if (r) e.textContent = '√' + wrap(r.textContent); });
+  return (d.textContent || '').replace(/\s+/g, ' ').trim(); }
+function choiceText(p, i) { const c = p.choices[i]; if (!c) return ''; const t = c.fig ? '' : plainText(c.m !== undefined ? Rm(c.m) : Rp(c.t)); return LET[i] + (t ? ': ' + t : ''); }
+function givenText(p, a) {
+  if (p.type === 'mc') return choiceText(p, a);
+  if (p.type === 'multi') return a.slice().sort().map(i => choiceText(p, i)).join('; ');
+  if (p.type === 'num') return String(a).trim() + (p.unit ? ' ' + p.unit : '');
+  if (p.type === 'match') return a.map(v => p.opts[v] === undefined ? '(blank)' : p.opts[v]).join(', ');
+  if (p.type === 'plot') return a.map(q => `(${q[0]}, ${q[1]})`).join(', ');
+  return '';
+}
+function rightText(p) {
+  const k = keyAnswer(p);
+  if (p.type === 'mc' || p.type === 'multi') return givenText(p, k);
+  return plainText(answerText(p));
+}
+function logPractice(code, P, ok) {
+  const w = pracWho(); if (!w) return;
+  const t = TEK[code], p = P.p, now = Date.now(), cut = (x, n) => x.length > n ? x.slice(0, n - 1) + '…' : x;
+  logEvent({ event: 'practice', id: newId(), name: w.name, period: w.period, dateLocal: day(now), timeLocal: clock(now), teks: t.id, topic: t.short,
+    skill: plainText(skName(p.skill)), mode: modeName(S.plv || 1), question: cut(plainText((p.lead ? Rp(p.lead) + ' ' : '') + Rp(p.q)), 400),
+    answer: cut(givenText(p, P.a), 300), correct: cut(rightText(p), 300), ok: !!ok, hint: !!P.hint });
+}
+
 /* ---------- logging to the teacher's Google Sheet ---------- */
 function logEvent(ev) {
   if (!LOG_URL) return;
   ev.course = COURSE;
-  saved.outbox = (saved.outbox || []).concat([ev]).slice(-40); save(); flush();
+  saved.outbox = (saved.outbox || []).concat([ev]).slice(-200); save(); flush();
 }
 let flushing = false;
 function flush() {
@@ -2507,7 +2566,7 @@ function render(scrollTop) {
 function current() {
   if (S.view === 'mix' && saved.test) return { T: saved.test, test: true };
   if (S.view === 'tp' && tpActive()) return { P: saved.tp.P, tp: true };
-  const t = TEK[S.view]; if (t && S.tab[t.code] === 'practice') return { P: S.prac[t.code], code: t.code };
+  const t = TEK[S.view]; if (t && S.tab[t.code] === 'practice' && S.prac[t.code] && !pracGate()) return { P: S.prac[t.code], code: t.code };
   return null;
 }
 function refreshCard() {
@@ -2526,7 +2585,7 @@ function check() {
   P.done = true; st.t++;
   if (ok) { st.r++; if (!P.hint) st.s++; P.steps = true; } else st.s = 0;
   if (st.s >= 3) st.d = true;
-  if (c.tp) tpAfterCheck(ok);
+  if (c.tp) tpAfterCheck(ok); else if (c.code) logPractice(c.code, P, ok);
   save(); if (st.d) renderTabs(); refreshCard();
   const fb = document.querySelector('.fb'); if (fb) fb.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
@@ -2555,6 +2614,8 @@ document.addEventListener('click', e => {
   const a = b.dataset.act, c = current();
   if (a === 'plot') return; // handled by pointer
   if (a === 'signin') return doSignIn();
+  if (a === 'pracsign') return doPracSign();
+  if (a === 'pracout') { saved.who = Object.assign({}, saved.who, { name: '', period: '' }); save(); S.signErr = ''; render(); const f = document.getElementById('st-first'); if (f) f.focus(); return; }
   if (a === 'go') return go(b.dataset.go);
   if (a === 'learn') { S.tab[b.dataset.code] = 'learn'; return go(b.dataset.code); }
   if (a === 'tab') { S.tab[S.view] = b.dataset.tab; render(true); return; }
@@ -2640,7 +2701,7 @@ function doTpStart() {
   S.signErr = ''; tpStart(name, period, codes, n); render(true);
 }
 /* Sign-in runs from a click (and Enter), not a form submission: the published page's sandbox blocks form submissions. */
-document.addEventListener('submit', e => { if (e.target.id === 'signin') { e.preventDefault(); doSignIn(); } if (e.target.id === 'tpform') { e.preventDefault(); doTpStart(); } });
+document.addEventListener('submit', e => { if (e.target.id === 'signin') { e.preventDefault(); doSignIn(); } if (e.target.id === 'tpform') { e.preventDefault(); doTpStart(); } if (e.target.id === 'pracform') { e.preventDefault(); doPracSign(); } });
 function doSignIn() {
   const cap = v => v ? v[0].toUpperCase() + v.slice(1).toLowerCase() : v;
   const f3 = document.getElementById('st-first').value.replace(/\s+/g, ''), l3 = document.getElementById('st-last').value.replace(/\s+/g, '');
@@ -2676,7 +2737,7 @@ document.addEventListener('pointerdown', e => {
 });
 document.addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
-  const tag = (e.target.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'textarea' || tag === 'select') { if (e.key === 'Enter' && e.target.closest && e.target.closest('#signin')) { e.preventDefault(); doSignIn(); return; } if (e.key === 'Enter' && e.target.closest && e.target.closest('#tpform')) { e.preventDefault(); doTpStart(); return; } if (e.key === 'Enter' && tag === 'input' && e.target.dataset.act === 'num') { const c = current(); if (c) { e.preventDefault(); c.test ? (c.T.exam ? (c.T.i < c.T.items.length - 1 && gotoQ(c.T.i + 1)) : testCheck()) : check(); } } return; }
+  const tag = (e.target.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'textarea' || tag === 'select') { if (e.key === 'Enter' && e.target.closest && e.target.closest('#signin')) { e.preventDefault(); doSignIn(); return; } if (e.key === 'Enter' && e.target.closest && e.target.closest('#tpform')) { e.preventDefault(); doTpStart(); return; } if (e.key === 'Enter' && e.target.closest && e.target.closest('#pracform')) { e.preventDefault(); doPracSign(); return; } if (e.key === 'Enter' && tag === 'input' && e.target.dataset.act === 'num') { const c = current(); if (c) { e.preventDefault(); c.test ? (c.T.exam ? (c.T.i < c.T.items.length - 1 && gotoQ(c.T.i + 1)) : testCheck()) : check(); } } return; }
   if (e.key === 'Escape' && S.fc) { S.fc = false; render(); return; }
   const c = current(); if (!c) return;
   const p = c.test ? c.T.items[c.T.i] : c.P.p, done = c.test ? !!(c.T.done && c.T.done[c.T.i]) : c.P.done;
