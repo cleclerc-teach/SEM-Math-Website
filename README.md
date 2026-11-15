@@ -6,7 +6,7 @@ its level, a "My progress" page, and a 32-, 28-, or 15-question mixed review (an
 the Dallas ISD blueprint. Every question is generated fresh, so students never run out.
 
 **Algebra II Advanced** (`algebra2/`): lessons and practice for all 14 TEKS (2A.2A, 3A, 3B, 3F, 4B, 4D, 4F, 4H,
-6C, 6D, 6E, 6F, 7A, 7I) plus a 28- or 14-question mixed review. Content crossed out on the 2026-27 blueprint is never
+6C, 6D, 6E, 6F, 7A, 7I), a 28- or 14-question mixed review (answers after each question or at the end), targeted practice that adjusts its level, and a "My progress" page. Content crossed out on the 2026-27 blueprint is never
 used (only the x³ and |x| parent functions, no focus/directrix, no square root equations, no set notation).
 Its class choices are set in its own entry in the `courses` list in `settings.js` (`periods`, `defaultPeriod`).
 
