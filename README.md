@@ -32,10 +32,10 @@ for it in the `courses` list in `settings.js`. The home page card becomes a link
 
 1. Open `logging-apps-script.gs` and follow the 4 steps at the top (make a Google Sheet, paste the script, deploy as a web app).
 2. Paste the web app URL into `logUrl` in `settings.js`.
-3. Every time a student starts or finishes a mixed review, a row lands in your sheet: name, period, difficulty,
-   time taken, score, percent, the questions missed, and the score on each TEKS.
+3. Every time a student starts or finishes a mixed review or a targeted practice, a row lands in your sheet: name, period,
+   number of questions chosen, difficulty, time taken, score, percent, the questions missed, and the score on each TEKS.
 4. On each lesson's Practice tab, students type their initials and period once, and every answer they check
-   adds a row to a Practice tab: the TEKS, skill, question, their answer, the correct answer, right or wrong,
+   adds a row to a Lesson Practice tab: the TEKS, skill, question, their answer, the correct answer, right or wrong,
    and whether they used a hint. (With no `logUrl`, the Practice tab skips the sign-in.)
 
 If a student is offline, the result waits on their device and sends the next time they open the site.
@@ -49,8 +49,8 @@ If a student is offline, the result waits on their device and sends the next tim
 
 Link straight to one topic by adding its code: `geometry/#g6d`, `algebra2/#a4d`, or `#mix` for the mixed review.
 
-Geometry results go to "Geometry Started" and "Geometry Finished", and Algebra 2 results go to "Algebra 2 Started" and "Algebra 2 Finished", all in the same sheet.
-Lesson practice goes to "Geometry Practice" and "Algebra 2 Practice".
+Each course gets its own tabs in the same sheet: "Geometry Mixed Review", "Geometry Targeted Practice", and
+"Geometry Lesson Practice" (plus "... Started" tabs for mixed review and targeted practice), and the same for Algebra 2.
 
 ## For another teacher
 
