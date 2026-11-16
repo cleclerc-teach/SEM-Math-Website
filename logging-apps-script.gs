@@ -12,9 +12,9 @@
  *
  * Tabs fill in automatically, a set for each course ("Geometry ..." and "Algebra 2 ..."):
  *   "Mixed Review"               one row per finished mixed review: questions chosen, score, score per TEKS, questions missed
- *   "Mixed Review Started"       one row each time a student starts a mixed review
+ *   "Mixed Review Started"       one row each time a student starts a mixed review; Finished turns from No to Yes when they finish
  *   "Targeted Practice"          one row per finished targeted practice: questions and topics chosen, score, questions missed
- *   "Targeted Practice Started"  one row each time a student starts a targeted practice
+ *   "Targeted Practice Started"  one row each time a student starts a targeted practice; Finished turns from No to Yes too
  *   "Lesson Practice"            one row for every answer checked on a lesson's Practice tab
  * Tabs from older versions ("Geometry Finished", "Geometry Started", "Algebra 2 Finished", ...) are left
  * as they are and get no new rows. Keep them for the old results, or delete them.
@@ -45,9 +45,10 @@ function doPost(e) {
       const per = ev.per || {};
       sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.chosen || ev.total], tp ? [ev.topics || ''] : [], [ev.mode, ev.startLocal, ev.endLocal, ev.timeTaken, ev.score, ev.total, ev.pct / 100, ev.missed || '']).concat(c.teks.map(k => per[k] || '')));
       sh.getRange(sh.getLastRow(), head.indexOf('Percent') + 1).setNumberFormat('0%');
+      markFinished_(ss, c.prefix + kind + ' Started', startHead_(c, tp), ev);
     } else if (ev.event === 'start') {
-      const sh = sheet_(ss, c.prefix + kind + ' Started', ['Received', 'First name', 'Last name', c.cls, 'Questions chosen'].concat(tp ? ['Topics chosen'] : [], ['Difficulty', 'Started']));
-      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.chosen || ''], tp ? [ev.topics || ''] : [], [ev.mode, ev.startLocal]));
+      const sh = sheet_(ss, c.prefix + kind + ' Started', startHead_(c, tp));
+      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.chosen || ''], tp ? [ev.topics || ''] : [], [ev.mode, ev.startLocal, 'No', '', ev.id || '']));
     } else if (ev.event === 'practice') {
       // One row for each answer a student checks on a lesson's Practice tab.
       const sh = sheet_(ss, c.prefix + 'Lesson Practice', ['Received', 'First name', 'Last name', c.cls, 'Date', 'Time', 'TEKS', 'Topic', 'Skill', 'Difficulty', 'Question', 'Student answer', 'Correct answer', 'Result', 'Used a hint']);
@@ -59,12 +60,27 @@ function doPost(e) {
   }
 }
 
+// Columns of a "Started" tab. "Finished" says No until the student finishes, then Yes (with the score).
+function startHead_(c, tp) {
+  return ['Received', 'First name', 'Last name', c.cls, 'Questions chosen'].concat(tp ? ['Topics chosen'] : [], ['Difficulty', 'Started', 'Finished', 'Score', 'ID']);
+}
+
+// When a student finishes, find their row on the Started tab (by ID) and change Finished to Yes.
+function markFinished_(ss, name, head, ev) {
+  const sh = ss.getSheetByName(name);
+  if (!sh || !ev.id || sh.getLastRow() < 2) return;
+  const idCol = head.indexOf('ID') + 1;
+  const cell = sh.getRange(2, idCol, sh.getLastRow() - 1, 1).createTextFinder(String(ev.id)).matchEntireCell(true).findNext();
+  if (!cell) return;
+  sh.getRange(cell.getRow(), head.indexOf('Finished') + 1, 1, 2).setValues([['Yes', ev.score + ' of ' + ev.total]]);
+}
+
 // Open the web app URL to check it. Add ?test=1 to the end of the URL to write one test row.
 function doGet(e) {
   const ss = book_();
   if (e && e.parameter && e.parameter.test) {
-    const sh = sheet_(ss, 'Geometry Mixed Review Started', ['Received', 'First name', 'Last name', 'Period', 'Questions chosen', 'Difficulty', 'Started']);
-    sh.appendRow([new Date(), 'TEST', 'ROW (delete me)', '', '', '', '']);
+    const sh = sheet_(ss, 'Geometry Mixed Review Started', startHead_(course_({}), false));
+    sh.appendRow([new Date(), 'TEST', 'ROW (delete me)', '', '', '', '', '', '', '']);
   }
   return ContentService.createTextOutput('The ACP Prep log is running. Results go to: ' + ss.getName() + '  ' + ss.getUrl());
 }
