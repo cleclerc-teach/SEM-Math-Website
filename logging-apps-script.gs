@@ -10,20 +10,21 @@
  *     Click Deploy, approve the permissions, and copy the Web app URL (ends in /exec).
  *  4. Paste that URL into logUrl in settings.js and re-upload settings.js.
  *
- * Tabs fill in automatically. Geometry: "Geometry Finished" (one row per completed review, with
- * the score per TEKS and the questions missed) and "Geometry Started" (one row each time a student
- * starts). Algebra 2 goes to its own tabs: "Algebra 2 Finished" and "Algebra 2 Started".
- * Practice on each lesson's Practice tab goes to "Geometry Practice" and "Algebra 2 Practice"
- * (one row for every answer a student checks: the question, their answer, the correct answer, right or wrong).
- * Older tabs named just "Finished" and "Started" are renamed to the Geometry names automatically,
- * with their rows kept.
+ * Tabs fill in automatically, a set for each course ("Geometry ..." and "Algebra 2 ..."):
+ *   "Mixed Review"               one row per finished mixed review: questions chosen, score, score per TEKS, questions missed
+ *   "Mixed Review Started"       one row each time a student starts a mixed review; Finished turns from No to Yes when they finish
+ *   "Targeted Practice"          one row per finished targeted practice: questions and topics chosen, score, questions missed
+ *   "Targeted Practice Started"  one row each time a student starts a targeted practice; Finished turns from No to Yes too
+ *   "Lesson Practice"            one row for every answer checked on a lesson's Practice tab
+ * Tabs from older versions ("Geometry Finished", "Geometry Started", "Algebra 2 Finished", ...) are left
+ * as they are and get no new rows. Keep them for the old results, or delete them.
  * If you edit this script later, use Deploy > Manage deployments > Edit > New version,
  * so the URL stays the same.
  */
 const TEKS_ORDER = ['G.2B', 'G.2C', 'G.3B', 'G.4B', 'G.4C', 'G.5A', 'G.5B', 'G.5C', 'G.5D', 'G.6A', 'G.6C', 'G.6D', 'G.11A', 'G.2A', 'G.6B'];
 const A2_TEKS_ORDER = ['2A.2A', '2A.3A', '2A.3B', '2A.3F', '2A.4B', '2A.4D', '2A.4F', '2A.4H', '2A.6C', '2A.6D', '2A.6E', '2A.6F', '2A.7A', '2A.7I'];
 
-// Each course writes to its own pair of tabs.
+// Each course writes to its own set of tabs.
 function course_(ev) {
   if (ev.course === 'Algebra 2') return { prefix: 'Algebra 2 ', teks: A2_TEKS_ORDER, cls: 'Class' };
   return { prefix: 'Geometry ', teks: TEKS_ORDER, cls: 'Period' };
@@ -35,18 +36,23 @@ function doPost(e) {
   try {
     const ev = JSON.parse(e.postData.contents);
     const ss = book_(), c = course_(ev);
+    // Mixed review and targeted practice each get their own tabs. (Older site versions sent no "kind".)
+    const tp = ev.kind ? ev.kind === 'targeted' : /^Targeted/.test(ev.mode || '');
+    const kind = tp ? 'Targeted Practice' : 'Mixed Review';
     if (ev.event === 'finish') {
-      const sh = sheet_(ss, c.prefix + 'Finished', ['Received', 'First name', 'Last name', c.cls, 'Difficulty', 'Started', 'Finished', 'Time taken', 'Score', 'Out of', 'Percent', 'Missed'].concat(c.teks));
+      const head = ['Received', 'First name', 'Last name', c.cls, 'Questions chosen'].concat(tp ? ['Topics chosen'] : [], ['Difficulty', 'Started', 'Finished', 'Time taken', 'Score', 'Out of', 'Percent', 'Missed']);
+      const sh = sheet_(ss, c.prefix + kind, head.concat(c.teks));
       const per = ev.per || {};
-      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.mode, ev.startLocal, ev.endLocal, ev.timeTaken, ev.score, ev.total, ev.pct / 100, ev.missed || '']).concat(c.teks.map(k => per[k] || '')));
-      sh.getRange(sh.getLastRow(), 11).setNumberFormat('0%');
+      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.chosen || ev.total], tp ? [ev.topics || ''] : [], [ev.mode, ev.startLocal, ev.endLocal, ev.timeTaken, ev.score, ev.total, ev.pct / 100, ev.missed || '']).concat(c.teks.map(k => per[k] || '')));
+      sh.getRange(sh.getLastRow(), head.indexOf('Percent') + 1).setNumberFormat('0%');
+      markFinished_(ss, c.prefix + kind + ' Started', startHead_(c, tp), ev);
+    } else if (ev.event === 'start') {
+      const sh = sheet_(ss, c.prefix + kind + ' Started', startHead_(c, tp));
+      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.chosen || ''], tp ? [ev.topics || ''] : [], [ev.mode, ev.startLocal, 'No', '', ev.id || '']));
     } else if (ev.event === 'practice') {
       // One row for each answer a student checks on a lesson's Practice tab.
-      const sh = sheet_(ss, c.prefix + 'Practice', ['Received', 'First name', 'Last name', c.cls, 'Date', 'Time', 'TEKS', 'Topic', 'Skill', 'Difficulty', 'Question', 'Student answer', 'Correct answer', 'Result', 'Used a hint']);
+      const sh = sheet_(ss, c.prefix + 'Lesson Practice', ['Received', 'First name', 'Last name', c.cls, 'Date', 'Time', 'TEKS', 'Topic', 'Skill', 'Difficulty', 'Question', 'Student answer', 'Correct answer', 'Result', 'Used a hint']);
       sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.dateLocal, ev.timeLocal, ev.teks, ev.topic, ev.skill, ev.mode, ev.question, ev.answer, ev.correct, ev.ok ? 'Right' : 'Wrong', ev.hint ? 'Yes' : '']));
-    } else if (ev.event === 'start') {
-      const sh = sheet_(ss, c.prefix + 'Started', ['Received', 'First name', 'Last name', c.cls, 'Difficulty', 'Started']);
-      sh.appendRow([new Date()].concat(names_(ev.name), [ev.period, ev.mode, ev.startLocal]));
     }
     return ContentService.createTextOutput('ok');
   } finally {
@@ -54,12 +60,27 @@ function doPost(e) {
   }
 }
 
+// Columns of a "Started" tab. "Finished" says No until the student finishes, then Yes (with the score).
+function startHead_(c, tp) {
+  return ['Received', 'First name', 'Last name', c.cls, 'Questions chosen'].concat(tp ? ['Topics chosen'] : [], ['Difficulty', 'Started', 'Finished', 'Score', 'ID']);
+}
+
+// When a student finishes, find their row on the Started tab (by ID) and change Finished to Yes.
+function markFinished_(ss, name, head, ev) {
+  const sh = ss.getSheetByName(name);
+  if (!sh || !ev.id || sh.getLastRow() < 2) return;
+  const idCol = head.indexOf('ID') + 1;
+  const cell = sh.getRange(2, idCol, sh.getLastRow() - 1, 1).createTextFinder(String(ev.id)).matchEntireCell(true).findNext();
+  if (!cell) return;
+  sh.getRange(cell.getRow(), head.indexOf('Finished') + 1, 1, 2).setValues([['Yes', ev.score + ' of ' + ev.total]]);
+}
+
 // Open the web app URL to check it. Add ?test=1 to the end of the URL to write one test row.
 function doGet(e) {
   const ss = book_();
   if (e && e.parameter && e.parameter.test) {
-    const sh = sheet_(ss, 'Geometry Started', ['Received', 'First name', 'Last name', 'Period', 'Difficulty', 'Started']);
-    sh.appendRow([new Date(), 'TEST', 'ROW (delete me)', '', '', '']);
+    const sh = sheet_(ss, 'Geometry Mixed Review Started', startHead_(course_({}), false));
+    sh.appendRow([new Date(), 'TEST', 'ROW (delete me)', '', '', '', '', '', '', '']);
   }
   return ContentService.createTextOutput('The ACP Prep log is running. Results go to: ' + ss.getName() + '  ' + ss.getUrl());
 }
@@ -85,11 +106,6 @@ function names_(name) {
 
 function sheet_(ss, name, header) {
   let sh = ss.getSheetByName(name);
-  // An older version used plain "Started" and "Finished" for Geometry. Rename those tabs, keeping their rows.
-  if (!sh && name.indexOf('Geometry ') === 0) {
-    sh = ss.getSheetByName(name.slice('Geometry '.length));
-    if (sh) sh.setName(name);
-  }
   // A newer site version can add columns (G.2A and G.6B came later). Add any missing header cells at the end.
   if (sh && sh.getLastRow() > 0 && sh.getLastColumn() < header.length) {
     sh.getRange(1, sh.getLastColumn() + 1, 1, header.length - sh.getLastColumn()).setValues([header.slice(sh.getLastColumn())]).setFontWeight('bold');

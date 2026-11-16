@@ -3915,7 +3915,7 @@ function startTest(name, period, mode, len, exam) {
   const T = { id: newId(), name, period, mode, len, exam: !!exam, start: Date.now(), items: buildTest(mode, len), i: 0, flags: [], qt: [], enter: Date.now() };
   T.ans = T.items.map(() => null); T.done = T.items.map(() => false); T.ok = T.items.map(() => false); T.st = T.items.map(() => false); T.qt = T.items.map(() => 0);
   saved.test = T; saved.who = { name, period, mode, len, exam: !!exam }; save();
-  logEvent({ event: 'start', id: T.id, name, period, mode: modeName(mode) + (exam ? ', answers at end' : ''), start: new Date(T.start).toISOString(), startLocal: day(T.start) + ' ' + clock(T.start) });
+  logEvent({ event: 'start', kind: 'mixed', chosen: len, id: T.id, name, period, mode: modeName(mode) + (exam ? ', answers at end' : ''), start: new Date(T.start).toISOString(), startLocal: day(T.start) + ' ' + clock(T.start) });
 }
 function tickQ() { const T = saved.test; if (!T) return; const now = Date.now(); T.qt[T.i] = (T.qt[T.i] || 0) + (now - (T.enter || now)) / 1000; T.enter = now; }
 function submitTest() {
@@ -3928,7 +3928,7 @@ function submitTest() {
   saved.lastTest = { id: T.id, items: T.items, ans: T.ans };
   delete saved.test; save();
   S.view = 'mix'; S.sub = false; S.copied = false; S.justDone = R.id;
-  logEvent({ event: 'finish', id: R.id, name: R.name, period: R.period, mode: modeName(R.mode) + (R.exam ? ', answers at end' : ''), start: new Date(R.start).toISOString(), end: new Date(end).toISOString(), startLocal: day(R.start) + ' ' + clock(R.start), endLocal: clock(end), secs: R.secs, timeTaken: fmtTime(R.secs), score, total: R.n, pct: Math.round(100 * score / R.n),
+  logEvent({ event: 'finish', kind: 'mixed', chosen: R.n, id: R.id, name: R.name, period: R.period, mode: modeName(R.mode) + (R.exam ? ', answers at end' : ''), start: new Date(R.start).toISOString(), end: new Date(end).toISOString(), startLocal: day(R.start) + ' ' + clock(R.start), endLocal: clock(end), secs: R.secs, timeTaken: fmtTime(R.secs), score, total: R.n, pct: Math.round(100 * score / R.n),
     per: Object.fromEntries(Object.entries(per).filter(([, v]) => v[1]).map(([k, v]) => [k, `${v[0]}/${v[1]}`])), missed: res.map((r, i) => r.ok ? null : `Q${i + 1} ${r.se}`).filter(Boolean).join(', ') });
 }
 
@@ -4149,7 +4149,7 @@ function tpStart(name, period, codes, n) {
   const order = []; while (order.length < n) order.push(...G.shuffle(codes));
   const T = { id: newId(), kind: 'tp', name, period, codes, n, order: order.slice(0, n), lv: 1, up: 0, top: 1, i: 0, log: [], start: Date.now() };
   tpPick(T); saved.tp = T; saved.who = Object.assign({}, saved.who, { name, period }); saved.tpCodes = codes; saved.tpN = n; save();
-  logEvent({ event: 'start', id: T.id, name, period, mode: 'Targeted practice', start: new Date(T.start).toISOString(), startLocal: day(T.start) + ' ' + clock(T.start) });
+  logEvent({ event: 'start', kind: 'targeted', chosen: n, topics: codes.map(c => TEK[c].id).join(', '), id: T.id, name, period, mode: 'Starts at ' + modeName(1), start: new Date(T.start).toISOString(), startLocal: day(T.start) + ' ' + clock(T.start) });
 }
 function tpAfterCheck(ok) {
   const T = saved.tp, P = T.P;
@@ -4173,7 +4173,7 @@ function tpFinish() {
   const R = { id: T.id, kind: 'tp', name: T.name, period: T.period, mode: T.lv, top: T.top, start: T.start, end, secs: Math.round((end - T.start) / 1000), score, n: res.length, per, res };
   saved.results = (saved.results || []).concat([R]).slice(-30);
   T.fin = R.id; save(); S.copied = false;
-  if (res.length) logEvent({ event: 'finish', id: R.id, name: R.name, period: R.period, mode: `Targeted practice, ended at ${modeName(T.lv)}`, start: new Date(R.start).toISOString(), end: new Date(end).toISOString(), startLocal: day(R.start) + ' ' + clock(R.start), endLocal: clock(end), secs: R.secs, timeTaken: fmtTime(R.secs), score, total: R.n, pct: Math.round(100 * score / R.n),
+  if (res.length) logEvent({ event: 'finish', kind: 'targeted', chosen: T.n, topics: T.codes.map(c => TEK[c].id).join(', '), id: R.id, name: R.name, period: R.period, mode: `Ended at ${modeName(T.lv)}`, start: new Date(R.start).toISOString(), end: new Date(end).toISOString(), startLocal: day(R.start) + ' ' + clock(R.start), endLocal: clock(end), secs: R.secs, timeTaken: fmtTime(R.secs), score, total: R.n, pct: Math.round(100 * score / R.n),
     per: Object.fromEntries(Object.entries(per).filter(([, v]) => v[1]).map(([k, v]) => [k, `${v[0]}/${v[1]}`])), missed: res.map((r, i) => r.ok ? null : `Q${i + 1} ${r.se}`).filter(Boolean).join(', ') });
   render(true);
 }
