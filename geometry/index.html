@@ -2312,6 +2312,50 @@ S['6a_chain'] = { se: 'G.6A', name: 'Five-step angle chain with a bisector (hard
   return S['6a_chain'].gen();
 } };
 
+/* V-shaped snake: two segments meet ON line q, with a linear pair at line p and an optional distractor ray (like a past ACP item) */
+S['6a_vsnake'] = { se: 'G.6A', name: 'V-shaped snake angle between parallel lines', w: 3, gen() {
+  for (let t = 0; t < 400; t++) {
+    const a = rint(32, 58), right = !(G.LV >= 3 && G.rnd() < 0.5), vang = right ? 90 : rint(78, 104), k2 = 180 - a - vang;
+    if (k2 < 30 || k2 > 62 || Math.abs(k2 - a) < 4) continue;
+    const ask3 = G.LV >= 3 && G.rnd() < 0.5, ans = ask3 ? 180 - k2 : k2, flip = G.rnd() < 0.5;
+    const showD = G.LV >= 2 || G.rnd() < 0.5, dd = rint(35, 180 - a - 30), dLeft = 180 - a - dd; // distractor ray direction from A, before flipping
+    if (showD && (Math.abs(dd - ans) < 3 || Math.abs(dLeft - ans) < 3 || Math.abs(dLeft - 90) < 8)) continue;
+    const h = 170, yT = 40, yB = yT + h, V0 = [0, yB], A0 = [-h / Math.tan(a * Math.PI / 180), yT], B0 = [h / Math.tan(k2 * Math.PI / 180), yT];
+    const cx = (A0[0] + B0[0]) / 2, X = q => flip ? [2 * cx - q[0], q[1]] : q, M = th => flip ? 180 - th : th;
+    const arc = (F, P, a1, a2, fn) => flip ? fn(F, X(P), M(a2), M(a1)) : fn(F, X(P), a1, a2); // keeps arcs counterclockwise after a flip
+    const A = X(A0), B = X(B0), V = X(V0), xl = Math.min(A0[0], V0[0]) - 90, xr = Math.max(B0[0], V0[0]) + 90;
+    const draw = hl => { const F = new Fig(), L1 = X([xl, yT]), R1 = X([xr, yT]), L2 = X([xl, yB]), R2 = X([xr, yB]);
+      F.line(L1, R1, 10); F.line(L2, R2, 10);
+      const c1 = X([xr - 70, yT]), c2 = X([xr - 30, yT]), c3 = X([xr - 70, yB]), c4 = X([xr - 30, yB]); F.chev(c1, c2); F.chev(c3, c4);
+      F.text([Math.max(L1[0], R1[0]) + 22, yT + 5], 'p', { cls: 'lb', anchor: 'start' }); F.text([Math.max(L1[0], R1[0]) + 22, yB + 5], 'q', { cls: 'lb', anchor: 'start' });
+      F.seg(add(A, sub(A, V), 0.35), V); F.seg(V, add(B, sub(B, V), 0.35)); F.dot(A); F.dot(V); F.dot(B);
+      if (showD) F.seg(A, add(A, dir(M(180 - a - dd)), 120));
+      if (hl === 'lin') arc(F, A0, 180, 360 - a, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 34, 'hlw'));
+      if (hl === 'alt') { arc(F, A0, 360 - a, 360, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 34, 'hlw')); arc(F, V0, 180 - a, 180, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 34, 'hlw')); }
+      if (hl === 'str') { arc(F, V0, 180 - a, 180, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 34, 'hlw')); arc(F, V0, k2, 180 - a, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 30, 'hlw2')); arc(F, V0, 0, k2, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 38, 'hlw')); }
+      if (hl === 'ssi') { arc(F, V0, 0, k2, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 34, 'hlw')); arc(F, B0, 180 + k2, 360, (G2, P, x1, x2) => G2.wedge(P, x1, x2, 34, 'hlw2')); }
+      arc(F, A0, 180, 360 - a, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 18); G2.angLabel(P, x1, x2, 40, (180 - a) + '°', { size: 14 }); });
+      if (showD) arc(F, A0, 180 - a - dd, 180 - a, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 24); G2.angLabel(P, x1, x2, 46, dd + '°', { size: 14 }); });
+      if (right) arc(F, V0, k2, 180 - a, (G2, P, x1, x2) => G2.right(P, x1, x2, 12)); else arc(F, V0, k2, 180 - a, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 16); G2.angLabel(P, x1, x2, 34, vang + '°', { size: 14 }); });
+      arc(F, V0, 0, k2, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 26); if (!ask3) G2.angLabel(P, x1, x2, 44, '2', { cls: 'lb b', size: 15 }); });
+      if (ask3) arc(F, B0, 180 + k2, 360, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 20); G2.angLabel(P, x1, x2, 40, '3', { cls: 'lb b', size: 15 }); });
+      return F.svg(hl ? 'The same figure with the angles in this step shaded' : 'Parallel lines p and q with two segments that meet on line q in a V shape'); };
+    const nm = ask3 ? '∠3' : '∠2', vtxt = right ? 'right angle' : `${vang}° angle`;
+    const steps = [[`At line p, the marked ${180 - a}° angle and the acute angle between line p and that segment form a linear pair.`, `180° - ${180 - a}° = ${a}°`, draw('lin')],
+      [`That ${a}° angle and the angle between the same segment and line q are alternate interior angles, so they are congruent.`, `${a}°`, draw('alt')],
+      [`At the bottom vertex, the ${a}° angle, the ${vtxt}, and ∠2 make a straight angle on line q.`, `m∠2 = 180° - ${a}° - ${vang}° = ${k2}°`, draw('str')]];
+    if (ask3) steps.push(['∠2 and ∠3 are same-side interior angles, so they are supplementary.', `m∠3 = 180° - ${k2}° = ${ans}°`, draw('ssi')]);
+    if (showD) steps.push([`The ${dd}° angle was extra information. You did not need it.`, null]);
+    const traps = [{ v: a, why: `${a}° is the acute angle at line p. Keep going to the bottom vertex.` }, { v: 180 - a, why: `${180 - a}° is the given angle. Use its supplement.` },
+      { v: ask3 ? k2 : 180 - k2, why: ask3 ? `${k2}° is ∠2. ∠3 is its supplement.` : `${180 - k2}° is the supplement of ∠2.` }];
+    if (showD) traps.push({ v: dd, why: `${dd}° is the distractor angle. It does not touch ${nm}.` }, { v: dLeft, why: 'That angle is next to the distractor ray. It is not needed.' });
+    const lead = 'In the diagram, line p is parallel to line q.', q = `Based on the information in the diagram, what is \`m${nm}\` in degrees?`, hint = 'Find the acute angle at line p first. Then use alternate interior angles to move it down to line q, where three angles make a straight line.';
+    if (G.LV === 1 && G.rnd() < 0.6) return { type: 'mc', lead, fig: draw(), q, choices: numMC({ v: ans }, traps, '°'), hint, steps };
+    return { type: 'num', lead, fig: draw(), q, pre: `m${nm} =`, unit: 'degrees', answer: ans, traps, hint, steps };
+  }
+  return S['6a_vsnake'].gen();
+} };
+
 S['6a_expr'] = { se: 'G.6A', name: 'Parallel lines with expressions', w: 3, gen() {
   for (let t = 0; t < 500; t++) {
     const slant = pick(['/', '\\']), scheme = 'std';
@@ -3363,7 +3407,7 @@ const D = {
   '5b_identify': 1, '5b_steps': 2, '5b_words': 2,
   '5c_name': 1, '5c_double': 1, '5c_twopart': 2, '5c_bisector': 1, '5c_must': 3,
   '5d_possible': 1, '5d_range': 1, '5d_sets': 2, '5d_count': 2,
-  '6a_aux': 1, '6a_busy': 1, '6a_linvert': 1, '6a_chain': 3, '6a_expr': 2, '6a_perp': 2,
+  '6a_aux': 1, '6a_busy': 1, '6a_linvert': 1, '6a_chain': 3, '6a_vsnake': 2, '6a_expr': 2, '6a_perp': 2,
   '6c_corresp': 1, '6c_algebra': 1, '6c_statement': 2, '6c_sequence': 2,
   '6d_isosceles': 1, '6d_hard': 3, '6d_centroid': 2, '6d_midsegment': 2, '6d_exterior': 2, '6d_anglesum': 1, '6d_pythag': 1, '6d_pyproof': 2,
   '11a_area': 1, '11a_apothem': 1, '11a_side': 2, '11a_units': 1, '11a_radius': 3, '11a_context': 2
@@ -3384,7 +3428,7 @@ G.FACETS = {
   'G.5B': [{ k: 'arcs', name: 'Name a construction from its arcs', w: 4, s: ['5b_identify'] }, { k: 'words', name: 'Match a construction to its result', w: 2, s: ['5b_words'] }, { k: 'steps', name: 'Order the steps of a construction', w: 2, s: ['5b_steps'] }],
   'G.5C': [{ k: 'pbis', name: 'Perpendicular bisector: halves and right angles', w: 3, s: ['5c_double', '5c_twopart'] }, { k: 'abis', name: 'Angle bisector: two equal angles', w: 3, s: ['5c_bisector'] }, { k: 'name', name: 'Which special segment a construction makes', w: 2, s: ['5c_name'] }, { k: 'must', name: 'What a construction guarantees', w: 2, s: ['5c_must'] }],
   'G.5D': [{ k: 'third', name: 'Range for the third side', w: 3, s: ['5d_possible', '5d_range', '5d_count'] }, { k: 'sets', name: 'Which three lengths make a triangle', w: 2, s: ['5d_sets'] }],
-  'G.6A': [{ k: 'par', name: 'Angles from parallel lines and a transversal', w: 4, s: ['6a_aux', '6a_expr', '6a_busy', '6a_chain'] }, { k: 'int', name: 'Intersecting lines: vertical angles, linear pairs, perpendicular rays', w: 3, s: ['6a_linvert', '6a_perp'] }, { k: 'cyc', name: 'Opposite angles of a quadrilateral inscribed in a circle', w: 1.5, s: ['6a_cyclic'] }],
+  'G.6A': [{ k: 'par', name: 'Angles from parallel lines and a transversal', w: 4, s: ['6a_aux', '6a_vsnake', '6a_expr', '6a_busy', '6a_chain'] }, { k: 'int', name: 'Intersecting lines: vertical angles, linear pairs, perpendicular rays', w: 3, s: ['6a_linvert', '6a_perp'] }, { k: 'cyc', name: 'Opposite angles of a quadrilateral inscribed in a circle', w: 1.5, s: ['6a_cyclic'] }],
   'G.6C': [{ k: 'map', name: 'Rigid motions map one figure onto the other', w: 3, s: ['6c_corresp', '6c_sequence'] }, { k: 'parts', name: 'Corresponding parts of congruent figures', w: 3, s: ['6c_algebra', '6c_statement'] }],
   'G.6D': [{ k: 'iso', name: 'Base angles of isosceles triangles', w: 3, s: ['6d_isosceles', '6d_hard'] }, { k: 'sum', name: 'Triangle angle sum and exterior angles', w: 2, s: ['6d_anglesum', '6d_exterior'] }, { k: 'py', name: 'Pythagorean Theorem, its converse, and its proof', w: 1.5, s: ['6d_pythag', '6d_pyproof'] }, { k: 'mid', name: 'Midsegments', w: 2, s: ['6d_midsegment'] }, { k: 'median', name: 'Medians and the centroid', w: 2, s: ['6d_centroid'] }],
   'G.2A': [{ k: 'mid', name: 'Midpoint of a segment', w: 2, s: ['2a_midpoint'] }, { k: 'graph', name: 'Midpoint on a number line or a graph', w: 2, s: ['2a_mid_numline', '2a_mid_graph'] }],
@@ -3526,7 +3570,8 @@ const TEKS = [
       { t: 'The supplement trap', rule: 'Solve for x, find the angle, then check if the question asks for that angle or its neighbor. The answer is often the supplement.', ex: ['6a_expr', 4], watch: 'On real ACP items: choice A is x, choice B is the angle you found, and the answer is its supplement.' },
       { t: 'Busy figures: one transversal at a time', rule: 'When a figure has extra lines, pick the transversal that goes through the angle you need. Trace it from one parallel line to the next. The angles you need sit where THAT transversal crosses the parallel lines. A line perpendicular to the parallel lines makes a right angle with every one of them, so it builds right triangles.', ex: ['6a_busy', 1], watch: 'Measures on other transversals are there to distract you. Read the three letters: the middle letter is the vertex.' },
       { t: 'Quadrilaterals inscribed in a circle', rule: 'When all four vertices of a quadrilateral are on a circle, the quadrilateral is inscribed in the circle. Its opposite angles are supplementary: they add to 180°.', ex: ['6a_cyclic', 3], watch: 'Opposite angles add to 180°. They are not equal, and angles next to each other have no rule.' },
-      { t: 'Snake Angle Problems', rule: 'Supplement, auxiliary line, alternate interior angles, linear pair, bisector. Write every angle on the figure as soon as you know it.', ex: ['6a_chain', 5, 40777], watch: 'A bisector means HALF. Setting the expression equal to the whole angle is a trap.' }
+      { t: 'Snake Angle Problems', rule: 'Supplement, auxiliary line, alternate interior angles, linear pair, bisector. Write every angle on the figure as soon as you know it.', ex: ['6a_chain', 5, 40777], watch: 'A bisector means HALF. Setting the expression equal to the whole angle is a trap.' },
+      { t: 'Snake Angle Problems: the V shape', rule: 'When two segments meet ON a parallel line, find the acute angle at the other line, carry it down with alternate interior angles, then use the straight angle: the three angles along the line add to 180°.', ex: ['6a_vsnake', 2], watch: 'Some angles are extra. If a marked angle does not connect to the path, you do not need it.' }
     ], tip: 'Before you calculate, label each angle acute or obtuse. Parallel lines only make two sizes of angle.' },
   { id: 'G.6B', code: '6B', items: 1, extra: true, strand: 'proof', short: 'Congruence Proofs', title: 'Proving Triangles Congruent',
     teks: 'Prove two triangles are congruent by applying the Side-Angle-Side, Angle-Side-Angle, Side-Side-Side, Angle-Angle-Side, and Hypotenuse-Leg congruence conditions.',
