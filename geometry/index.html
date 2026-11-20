@@ -2337,7 +2337,7 @@ S['6a_vsnake'] = { se: 'G.6A', name: 'V-shaped snake angle between parallel line
       arc(F, A0, 180, 360 - a, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 18); G2.angLabel(P, x1, x2, 40, (180 - a) + '°', { size: 14 }); });
       if (showD) arc(F, A0, 180 - a - dd, 180 - a, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 24); G2.angLabel(P, x1, x2, 46, dd + '°', { size: 14 }); });
       if (right) arc(F, V0, k2, 180 - a, (G2, P, x1, x2) => G2.right(P, x1, x2, 12)); else arc(F, V0, k2, 180 - a, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 16); G2.angLabel(P, x1, x2, 34, vang + '°', { size: 14 }); });
-      arc(F, V0, 0, k2, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 26); if (!ask3) G2.angLabel(P, x1, x2, 44, '2', { cls: 'lb b', size: 15 }); });
+      arc(F, V0, 0, k2, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 26); if (!ask3 || hl) G2.angLabel(P, x1, x2, 44, '2', { cls: 'lb b', size: 15 }); });
       if (ask3) arc(F, B0, 180 + k2, 360, (G2, P, x1, x2) => { G2.ang(P, x1, x2, 20); G2.angLabel(P, x1, x2, 40, '3', { cls: 'lb b', size: 15 }); });
       return F.svg(hl ? 'The same figure with the angles in this step shaded' : 'Parallel lines p and q with two segments that meet on line q in a V shape'); };
     const nm = ask3 ? '∠3' : '∠2', vtxt = right ? 'right angle' : `${vang}° angle`;
